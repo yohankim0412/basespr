@@ -1,0 +1,155 @@
+<!---->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js" integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+<script id="list_info_tbpost" type="text/x-handlebars-template">
+    {{#resultData_tbpost}}
+    <div>
+
+        {{createdAt}} / {{modifiedAt}}
+    <a href="/tbpost/detail/{{id}}">{{title}}</a>//
+         // {{cate}} // {{mpic}} // {{content}}
+
+<input class="input_cursor_createdAt" value="{{createdAt}}"/>
+<input class="input_cursor_title" value="{{title}}"/>
+    </div>
+
+    {{/resultData_tbpost}}
+</script>
+<script type="text/javascript">
+    var list_info_tbpost = $("#list_info_tbpost").html();
+    var list_info_tbpost_template = Handlebars.compile(list_info_tbpost);
+</script>
+
+
+목록
+
+
+삭제여부
+<input type="text" id="detail_deleted"  onchange="resetParams()"/>
+제목
+<input type="text" id="detail_title"  onchange="resetParams()"/>
+
+한번에 볼 페이지 수
+<input type="text" id="perpage" />
+검색 기준
+<input type="text" id="cursor" />
+
+검색 방향
+<select id="orderway">
+    <option value="desc">역방향</option>
+    <option value="asc">정방향</option>
+</select>
+<!--<input type="text" id="orderway" />-->
+검색 기준
+<select id="orderby" onchange="resetParams()">
+    <option value="created_at">등록순</option>
+    <option value="title">가나다순</option>
+</select>
+<!--<input type="text" id="orderby" />-->
+
+<a href="javascript:mlist();">조회해줘요.</a>
+
+<div id="div_tbpost_list">
+
+</div>
+<script>
+    let chkResetParams = 0;
+    function resetParams(){
+        chkResetParams = 1;
+        //$("#cursor").val("");
+    }
+    function mlist(){
+        let cursor = $("#cursor").val();
+        let orderway = $("#orderway").val();
+        let orderby = $("#orderby").val();
+        let input_cursor = null;
+        if(orderway == "desc"){
+            if(orderby == "created_at"){
+                input_cursor = $(".input_cursor_createdAt");
+            } else if(orderby == "title"){
+                input_cursor = $(".input_cursor_title");
+            }
+            if(input_cursor.length > 0){
+                cursor = $(input_cursor[0]).val();
+                for(let i=0;i<input_cursor.length;i++){
+                    if(cursor > $(input_cursor[i]).val()){
+                        cursor = $(input_cursor[i]).val();
+                    }
+                }
+            }
+        } else {
+            if(orderby == "created_at"){
+                input_cursor = $(".input_cursor_createdAt");
+            } else if(orderby == "title"){
+                input_cursor = $(".input_cursor_title");
+            }
+            if(input_cursor.length > 0){
+                cursor = $(input_cursor[0]).val();
+                for(let i=0;i<input_cursor.length;i++){
+                    if(cursor < $(input_cursor[i]).val()){
+                        cursor = $(input_cursor[i]).val();
+                    }
+                }
+            }
+        }
+        $("#cursor").val(cursor);
+        //alert(cursor);
+        //return false;
+
+        $.ajax({
+            url : '/api/tbpost/mlist',
+            type : 'GET',
+            data: {
+                'deleted' : $("#detail_deleted").val()
+                ,'title' : $("#detail_title").val()
+                ,'perpage' : $("#perpage").val()
+                ,'cursor' : $("#cursor").val()
+                ,'orderby' : $("#orderby").val()
+                ,'orderway' : $("#orderway").val()
+            },
+            //paramData = $.param(_data.param);
+            beforeSend:function(){
+                //
+            },
+            success : function(data){
+                //alert(JSON.stringify(data));
+                let each_list = data;
+                if(chkResetParams === 1){
+                    $("#div_tbpost_list").html("");
+                    chkResetParams = 0;
+                }
+                if($("#orderway").val() == "desc"){
+                    $("#div_tbpost_list").append(list_info_tbpost_template({"resultData_tbpost":each_list}));
+                } else {
+                    //each_list
+                    each_list.reverse();
+                    $("#div_tbpost_list").prepend(list_info_tbpost_template({"resultData_tbpost":each_list}));
+                }
+
+                let detailKeys = Object.keys(data);
+                for (let eachKey of detailKeys){
+                    //alert(eachKey);
+                    $(".font_" + eachKey).text(data[eachKey]);
+                }
+
+                /*
+                */
+            },
+            error : function(request, status, error){
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            },
+            complete:function(){
+                //
+            }
+        });
+    }
+</script>
+</body>
+</html>

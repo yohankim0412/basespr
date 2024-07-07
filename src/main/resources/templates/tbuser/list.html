@@ -1,0 +1,75 @@
+<!---->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js" integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+<script id="list_info_tbuser" type="text/x-handlebars-template">
+    {{#resultData_tbuser}}
+    <div>
+        {{createdAt}} / {{modifiedAt}}
+        {{username}} // {{name}} // {{nick}}
+    </div>
+    {{/resultData_tbuser}}
+</script>
+<script type="text/javascript">
+    var list_info_tbuser = $("#list_info_tbuser").html();
+    var list_info_tbuser_template = Handlebars.compile(list_info_tbuser);
+</script>
+
+
+회원정보 목록
+
+아이디
+<input type="text" id="detail_username" />
+이름
+<input type="text" id="detail_name" />
+nick
+<input type="text" id="detail_nick" />
+phone
+<input type="text" id="detail_phone" />
+<a href="javascript:list();">조회해줘요.</a>
+
+<div id="div_tbuser_list">
+
+</div>
+<script>
+
+    function list(){
+        $.ajax({
+            url : '/api/tbuser/list',
+            type : 'GET',
+            data: {
+                'name' : $("#detail_name").val()
+                ,'nick' : $("#detail_nick").val()
+                ,'phone' : $("#detail_phone").val()
+                ,'username' : $("#detail_username").val()
+            },
+            //paramData = $.param(_data.param);
+            beforeSend:function(){
+                //
+            },
+            success : function(data){
+                alert(JSON.stringify(data));
+                let each_list = data;
+                $("#div_tbuser_list").append(list_info_tbuser_template({"resultData_tbuser":each_list}));
+
+                /*
+                alert(data.username);
+                */
+            },
+            error : function(request, status, error){
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            },
+            complete:function(){
+                //
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!---->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js" integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+<script id="list_info_tbpost" type="text/x-handlebars-template">
+    {{#resultData_tbpost}}
+    <div>
+
+        {{createdAt}} / {{modifiedAt}}
+    <a href="/tbpost/detail/{{id}}">{{title}}</a>//
+         // {{cate}} // {{mpic}} // {{content}}
+
+    </div>
+
+    {{/resultData_tbpost}}
+</script>
+<script type="text/javascript">
+    var list_info_tbpost = $("#list_info_tbpost").html();
+    var list_info_tbpost_template = Handlebars.compile(list_info_tbpost);
+</script>
+
+
+목록
+
+
+삭제여부
+<input type="text" id="detail_deleted" />
+제목
+<input type="text" id="detail_title" />
+구분
+<input type="text" id="detail_cate" />
+
+한번에 볼 페이지 수
+<input type="text" id="perpage" />
+내가 보고 싶은 페이지
+<input type="text" id="callpage" />
+검색 방향
+<select id="orderway">
+    <option value="desc">역방향</option>
+    <option value="asc">정방향</option>
+</select>
+<!--<input type="text" id="orderway" />-->
+검색 기준
+<select id="orderby">
+    <option value="created_at">등록순</option>
+    <option value="title">가나다순</option>
+</select>
+<!--<input type="text" id="orderby" />-->
+
+<a href="javascript:plist();">조회해줘요.</a>
+현재 페이지 : <font class="font_callpage">-</font>
+맨뒤 페이지 : <font class="font_lastpage">-</font>
+총 글 등록수 : <font class="font_listsize">-</font>
+<div id="div_tbpost_list">
+
+</div>
+<script>
+
+    function plist(){
+
+        $.ajax({
+            url : '/api/tbpost/plist',
+            type : 'GET',
+            data: {
+                'deleted' : $("#detail_deleted").val()
+                ,'title' : $("#detail_title").val()
+                ,'cate' : $("#detail_cate").val()
+                ,'perpage' : $("#perpage").val()
+                ,'callpage' : $("#callpage").val()
+                ,'orderby' : $("#orderby").val()
+                ,'orderway' : $("#orderway").val()
+            },
+            //paramData = $.param(_data.param);
+            beforeSend:function(){
+                //
+            },
+            success : function(data){
+                alert(JSON.stringify(data));
+                let each_list = data.list;
+                $("#div_tbpost_list").html("");
+                $("#div_tbpost_list").append(list_info_tbpost_template({"resultData_tbpost":each_list}));
+
+                let detailKeys = Object.keys(data);
+                for (let eachKey of detailKeys){
+                    //alert(eachKey);
+                    $(".font_" + eachKey).text(data[eachKey]);
+                }
+
+                /*
+                */
+            },
+            error : function(request, status, error){
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            },
+            complete:function(){
+                //
+            }
+        });
+    }
+</script>
+</body>
+</html>

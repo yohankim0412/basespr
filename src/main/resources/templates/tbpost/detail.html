@@ -1,0 +1,102 @@
+<!---->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+글 조회
+Id
+<input type="text" id="detail_id" />
+<br/>
+<br/>
+<br/>
+제목
+<input type="text" id="detail_title" />
+구분
+<input type="text" id="detail_cate" />
+사진
+<img id="img_mpic" />
+<input type="text" id="detail_mpic" />
+<a id="a_download_img" href="/download">사진 다운로드해보기!</a>
+내용
+<input type="text" id="detail_content" />
+<!--<a href="javascript:detail();">조회해줘요.</a>-->
+<a href="javascript:update();">수정해줘요.</a>
+<script>
+    $("#detail_id").val(getIdFromUrl(null));
+    detail();
+    function getIdFromUrl(obj){
+        let temp_url_with_idx = obj;
+        if(obj == null){
+            temp_url_with_idx = window.location.href;
+        }
+        let split_slash_temp_idx = temp_url_with_idx.split('/');
+        let temp_idx = split_slash_temp_idx[split_slash_temp_idx.length - 1];
+        let split_question_temp_idx = temp_idx.split('?');
+        if(split_question_temp_idx.length > 0){
+            temp_idx = split_question_temp_idx[0];
+        }
+        return temp_idx;
+    }
+    function detail(){
+        $.ajax({
+            url : '/api/tbpost/get/' + $("#detail_id").val(),
+            type : 'GET',
+            beforeSend:function(){
+                //
+            },
+            success : function(data){
+                //alert(JSON.stringify(data));
+                let detailKeys = Object.keys(data);
+                for (let eachKey of detailKeys){
+                    //alert(eachKey);
+                    $("#detail_" + eachKey).val(data[eachKey]);
+                    $("#img_" + eachKey).attr("src", data[eachKey]);
+                }
+
+                let aaa = data["mpic"];
+                let temphref = $("#a_download_img").attr("href");
+                temphref += aaa;
+                temphref = temphref.replaceAll("/uploadfile", "");
+                $("#a_download_img").attr("href", temphref);
+            },
+            error : function(request, status, error){
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            },
+            complete:function(){
+                //
+            }
+        });
+    }
+    function update(){
+        $.ajax({
+            url : '/api/tbpost',
+            type : 'PUT',
+            contentType:'application/json; charset=utf-8',
+            data: JSON.stringify({
+                'title' : $("#detail_title").val()
+                ,'cate' : $("#detail_cate").val()
+                ,'mpic' : $("#detail_mpic").val()
+                ,'content' : $("#detail_content").val()
+                ,'id' : $("#detail_id").val()
+            }),
+            beforeSend:function(){
+                //
+            },
+            success : function(data){
+                alert(JSON.stringify(data));
+            },
+            error : function(request, status, error){
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            },
+            complete:function(){
+                //
+            }
+        });
+    }
+</script>
+</body>
+</html>
