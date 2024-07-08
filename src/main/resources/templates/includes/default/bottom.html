@@ -1,0 +1,26 @@
+<script src="/resources/frontpub/js/bootstrap.bundle.min.js"></script>
+<script src="/resources/frontpub/js/tiny-slider.js"></script>
+<script src="/resources/frontpub/js/custom.js"></script>
+
+<!-- CUSTOM JS!!! -->
+<script src="/resources/common/js/default.js"></script>
+<script src="/resources/common/js/user.js"></script>
+
+<script>
+    let refreshToken = localStorage.getItem("refreshToken");
+    /*
+    let accessToken = localStorage.getItem("accessToken");
+    alert(refreshToken);
+    alert(accessToken);
+    alert("!!!!" + isNull(refreshToken));
+    */
+    $(".nav_tbuser_login").removeClass("hide");
+    $(".nav_tbuser_login").addClass("hide");
+    if(isNull(refreshToken)){
+        //로그인 이전
+        $(".nav_tbuser_login_before").removeClass("hide");
+    } else {
+        //로그인 이후
+        $(".nav_tbuser_login_after").removeClass("hide");
+    }
+</script>

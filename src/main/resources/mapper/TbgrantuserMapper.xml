@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thc.basespr.mapper.TbgrantuserMapper">
+
+	<select id="detail" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantuserDto$SelectResDto">
+		SELECT tbgrantuser.id
+			,tbgrantuser.deleted
+			,tbgrantuser.process
+			,tbgrantuser.created_at as createdAt
+			,tbgrantuser.modified_at as modifiedAt
+			,tbgrantuser.title
+			,tbgrantuser.cate
+			,tbgrantuser.img
+			,tbgrantuser.content
+		FROM tbgrantuser
+		WHERE tbgrantuser.id = #{id}
+	</select>
+	<select id="list" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantuserDto$SelectResDto">
+		SELECT tbgrantuser.id
+		FROM tbgrantuser
+		WHERE tbgrantuser.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbgrantuser.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND tbgrantuser.title LIKE CONCAT('%', #{title}, '%')</if>
+		ORDER BY tbgrantuser.created_at DESC;
+	</select>
+
+	<select id="moreList" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantuserDto$SelectResDto">
+		SELECT tbgrantuser.id
+		FROM tbgrantuser
+		WHERE tbgrantuser.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbgrantuser.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND tbgrantuser.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "cate != null and cate !=''">AND tbgrantuser.cate = #{cate}</if>
+		<if test = "orderby =='created_at'">
+			<if test = "orderway =='desc'">
+				AND STR_TO_DATE(#{cursor}, '%Y-%m-%d %H:%i:%s.%f') > tbgrantuser.created_at ORDER BY tbgrantuser.created_at DESC
+			</if>
+			<if test = "orderway =='asc'">
+				AND tbgrantuser.created_at > STR_TO_DATE(#{cursor}, '%Y-%m-%d %H:%i:%s.%f') ORDER BY tbgrantuser.created_at ASC
+			</if>
+		</if>
+		<if test = "orderby =='title'">
+			<if test = "orderway =='desc'">
+				AND #{cursor} > tbgrantuser.title ORDER BY tbgrantuser.created_at DESC
+			</if>
+			<if test = "orderway =='asc'">
+				AND tbgrantuser.title > #{cursor} ORDER BY tbgrantuser.created_at ASC
+			</if>
+		</if>
+		LIMIT 0, #{perpage}
+	</select>
+	<select id="pagedList" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantuserDto$SelectResDto">
+		SELECT tbgrantuser.id
+		FROM tbgrantuser
+		WHERE tbgrantuser.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbgrantuser.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND tbgrantuser.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "cate != null and cate !=''">AND tbgrantuser.cate = #{cate}</if>
+		<if test = "orderby =='created_at'">ORDER BY tbgrantuser.created_at </if>
+		<if test = "orderby =='title'">ORDER BY tbgrantuser.title </if>
+		<if test = "orderway =='asc'">ASC</if>
+		<if test = "orderway =='desc'">DESC</if>
+		LIMIT #{offset}, #{perpage}
+	</select>
+	<select id="pagedListCount" parameterType="hashMap" resultType="Integer">
+		SELECT count(tbgrantuser.id) as listsize
+		FROM tbgrantuser
+		WHERE tbgrantuser.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbgrantuser.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND tbgrantuser.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "cate != null and cate !=''">AND tbgrantuser.cate = #{cate}</if>
+	</select>
+
+</mapper>

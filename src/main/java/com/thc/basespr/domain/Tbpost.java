@@ -6,6 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
+@Table(indexes = {
+        @Index(columnList = "deleted")
+        ,@Index(columnList = "process")
+        ,@Index(columnList = "createdAt")
+        ,@Index(columnList = "modifiedAt")
+})
 @Entity
 public class Tbpost extends AuditingFields{
     @Setter @Column(nullable = false) private String title;
@@ -27,7 +33,7 @@ public class Tbpost extends AuditingFields{
         return new Tbpost(title, cate, img, content, tbuserId);
     }
 
-    public TbpostDto.CreateResDto toAfterCreateDto() {
+    public TbpostDto.CreateResDto toCreateResDto() {
         return TbpostDto.CreateResDto.builder().id(getId()).build();
     }
 }

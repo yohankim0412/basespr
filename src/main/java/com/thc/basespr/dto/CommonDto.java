@@ -27,8 +27,6 @@ public class CommonDto {
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class SelectReqDto {
 		@Schema(description = "id", example="")
 		private String id;
@@ -42,8 +40,6 @@ public class CommonDto {
 	@SuperBuilder
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class SelectServDto extends SelectReqDto {
 		@Schema(description = "reqTbuserId", example="")
 		private String reqTbuserId;
@@ -52,8 +48,6 @@ public class CommonDto {
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class SelectResDto {
 		@Schema(description = "id", example="")
 		private String id;
@@ -65,14 +59,34 @@ public class CommonDto {
 		private String modifiedAt;
 	}
 
+	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
+	public static class ListReqDto {
+		@Schema(description = "deleted", example="")
+		private String deleted;
+		@Schema(description = "process", example="")
+		private String process;
+		@Schema(description = "sdate", example="")
+		private String sdate;
+		@Schema(description = "fdate", example="")
+		private String fdate;
+	}
+
+	@SuperBuilder
+	@Schema
+	@Getter
+	@Setter
 	public static class MoreListReqDto {
 		@Schema(description = "deleted", example="")
 		private String deleted;
+		@Schema(description = "process", example="")
+		private String process;
+		@Schema(description = "sdate", example="")
+		private String sdate;
+		@Schema(description = "fdate", example="")
+		private String fdate;
 
 		@Schema(description = "cursor", example="")
 		private String cursor;
@@ -104,11 +118,15 @@ public class CommonDto {
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class PagedListReqDto {
 		@Schema(description = "deleted", example="")
 		private String deleted;
+		@Schema(description = "process", example="")
+		private String process;
+		@Schema(description = "sdate", example="")
+		private String sdate;
+		@Schema(description = "fdate", example="")
+		private String fdate;
 
 		@Schema(description = "callpage", example="")
 		private Integer callpage;
@@ -122,8 +140,6 @@ public class CommonDto {
 
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class PagedListServDto extends PagedListReqDto{
 		@Schema(description = "offset", example="")
 		private int offset;
@@ -172,8 +188,6 @@ public class CommonDto {
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class PagedListResDto<T> {
 		@Schema(description = "요청 페이지", example="1")
 		private int callpage;

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thc.basespr.mapper.TbgrantMapper">
+
+	<select id="detail" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantDto$SelectResDto">
+		SELECT tbgrant.id
+			,tbgrant.deleted
+			,tbgrant.process
+			,tbgrant.created_at as createdAt
+			,tbgrant.modified_at as modifiedAt
+			,tbgrant.title
+			,tbgrant.cate
+			,tbgrant.content
+		FROM tbgrant
+		WHERE tbgrant.id = #{id}
+	</select>
+	<select id="list" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantDto$SelectResDto">
+		SELECT tbgrant.id
+		FROM tbgrant
+		WHERE tbgrant.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbgrant.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND tbgrant.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "cate != null and cate !=''">AND tbgrant.cate = #{cate}</if>
+		<if test = "sdate != null and sdate !=''">AND tbgrant.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbgrant.created_at</if>
+		ORDER BY tbgrant.created_at DESC;
+	</select>
+
+	<select id="moreList" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantDto$SelectResDto">
+		SELECT tbgrant.id
+		FROM tbgrant
+		WHERE tbgrant.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbgrant.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND tbgrant.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "cate != null and cate !=''">AND tbgrant.cate = #{cate}</if>
+		<if test = "sdate != null and sdate !=''">AND tbgrant.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbgrant.created_at</if>
+		<if test = "orderby =='created_at'">
+			<if test = "orderway =='desc'">
+				AND STR_TO_DATE(#{cursor}, '%Y-%m-%d %H:%i:%s.%f') > tbgrant.created_at ORDER BY tbgrant.created_at DESC
+			</if>
+			<if test = "orderway =='asc'">
+				AND tbgrant.created_at > STR_TO_DATE(#{cursor}, '%Y-%m-%d %H:%i:%s.%f') ORDER BY tbgrant.created_at ASC
+			</if>
+		</if>
+		<if test = "orderby =='title'">
+			<if test = "orderway =='desc'">
+				AND #{cursor} > tbgrant.title ORDER BY tbgrant.created_at DESC
+			</if>
+			<if test = "orderway =='asc'">
+				AND tbgrant.title > #{cursor} ORDER BY tbgrant.created_at ASC
+			</if>
+		</if>
+		LIMIT 0, #{perpage}
+	</select>
+	<select id="pagedList" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantDto$SelectResDto">
+		SELECT tbgrant.id
+		FROM tbgrant
+		WHERE tbgrant.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbgrant.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND tbgrant.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "cate != null and cate !=''">AND tbgrant.cate = #{cate}</if>
+		<if test = "sdate != null and sdate !=''">AND tbgrant.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbgrant.created_at</if>
+		<if test = "orderby =='created_at'">ORDER BY tbgrant.created_at </if>
+		<if test = "orderby =='title'">ORDER BY tbgrant.title </if>
+		<if test = "orderway =='asc'">ASC</if>
+		<if test = "orderway =='desc'">DESC</if>
+		LIMIT #{offset}, #{perpage}
+	</select>
+	<select id="pagedListCount" parameterType="hashMap" resultType="Integer">
+		SELECT count(tbgrant.id) as listsize
+		FROM tbgrant
+		WHERE tbgrant.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbgrant.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND tbgrant.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "cate != null and cate !=''">AND tbgrant.cate = #{cate}</if>
+		<if test = "sdate != null and sdate !=''">AND tbgrant.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbgrant.created_at</if>
+	</select>
+
+</mapper>

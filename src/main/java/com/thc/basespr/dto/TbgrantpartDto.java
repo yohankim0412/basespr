@@ -1,6 +1,6 @@
 package com.thc.basespr.dto;
 
-import com.thc.basespr.domain.Tbpost;
+import com.thc.basespr.domain.Tbgrantpart;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -9,9 +9,32 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.beans.BeanUtils;
 
-import java.util.List;
+//2024-07-08 추가(클래스 처음 추가함)
+public class TbgrantpartDto {
 
-public class TbpostDto {
+	public static String[][] types = {
+			{"tbgrant","접근권한"}
+			,{"tbuser", "사용자"}
+
+			,{"tbnotice", "공지사항"}
+			,{"tbfaq", "FAQ"}
+			,{"tbbanner", "배너"}
+			,{"tbpopup", "팝업"}
+			,{"tbpost", "게시글"}
+			,{"tbpcate", "게시글 카테고리"}
+
+			,{"tbcrew", "가맹점"}
+	};
+
+	@Schema
+	@Getter
+	@Setter
+	public static class ToggleReqDto extends CreateReqDto {
+		@Schema(description = "way", example="")
+		@NotNull
+		@NotEmpty
+		private boolean way;
+	}
 
 	/**/
 
@@ -19,45 +42,32 @@ public class TbpostDto {
 	@Getter
 	@Setter
 	public static class CreateReqDto {
-		@Schema(description = "title", example="제목")
+		@Schema(description = "tbgrantId", example="tbgrantId")
 		@NotNull
 		@NotEmpty
-		@Size(max=200)
-		private String title;
-
-		@Schema(description = "cate", example="구분")
+		private String tbgrantId;
+		@Schema(description = "cate", example="cate")
 		@NotNull
 		@NotEmpty
-		@Size(max=50)
 		private String cate;
-		@Schema(description = "img", example="대표사진")
-		@Size(max=400)
-		private String img;
-		@Schema(description = "content", example="내용")
+		@Schema(description = "content", example="content")
 		@NotNull
 		@NotEmpty
-		@Size(max=40000)
 		private String content;
 
 		public CreateReqDto afterBuild(CreateReqDto param) {
 			BeanUtils.copyProperties(param, this);
 			return this;
 		}
-		public Tbpost toEntity() {
-			return Tbpost.of(title, cate, img, content, "");
+		public Tbgrantpart toEntity() {
+			return Tbgrantpart.of(tbgrantId, cate, content);
 		}
 	}
 	@Builder
 	@Getter
 	@Setter
 	public static class CreateServDto extends CreateReqDto {
-		private String tbuserId;
 		private String reqTbuserId;
-
-		@Override
-		public Tbpost toEntity() {
-			return Tbpost.of(getTitle(), getCate(), getImg(), getContent(), tbuserId);
-		}
 	}
 
 	@Builder
@@ -84,17 +94,17 @@ public class TbpostDto {
 		@Schema(description = "process", example="")
 		private String process;
 
-		@Schema(description = "title", example="제목")
-		@Size(max=200)
-		private String title;
-		@Schema(description = "cate", example="구분")
-		@Size(max=50)
+		@Schema(description = "tbgrantId", example="tbgrantId")
+		@NotNull
+		@NotEmpty
+		private String tbgrantId;
+		@Schema(description = "cate", example="cate")
+		@NotNull
+		@NotEmpty
 		private String cate;
-		@Schema(description = "img", example="대표사진")
-		@Size(max=400)
-		private String img;
-		@Schema(description = "content", example="내용")
-		@Size(max=40000)
+		@Schema(description = "content", example="content")
+		@NotNull
+		@NotEmpty
 		private String content;
 
 		public UpdateReqDto afterBuild(UpdateReqDto param) {
@@ -113,12 +123,10 @@ public class TbpostDto {
 	@Getter
 	@Setter
 	public static class SelectResDto extends CommonDto.SelectResDto {
-		@Schema(description = "title", example="")
-		private String title;
+		@Schema(description = "tbgrantId", example="")
+		private String tbgrantId;
 		@Schema(description = "cate", example="")
 		private String cate;
-		@Schema(description = "img", example="")
-		private String img;
 		@Schema(description = "content", example="")
 		private String content;
 	}
@@ -127,11 +135,11 @@ public class TbpostDto {
 	@Schema
 	@Getter
 	@Setter
-	public static class ListReqDto {
-		@Schema(description = "deleted", example="")
-		private String deleted;
-		@Schema(description = "title", example="")
-		private String title;
+	public static class ListReqDto extends CommonDto.ListReqDto{
+		@Schema(description = "tbgrantId", example="")
+		private String tbgrantId;
+		@Schema(description = "cate", example="")
+		private String cate;
 	}
 	@SuperBuilder
 	@Getter
@@ -172,27 +180,4 @@ public class TbpostDto {
 		@Schema(description = "cate", example="")
 		private String cate;
 	}
-	/*
-	@Schema
-	@Getter
-	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
-	public static class PagedListResDto {
-
-		@Schema(description = "요청 페이지", example="1")
-		private int callpage;
-		@Schema(description = "마지막 페이지", example="100")
-		private int lastpage;
-		@Schema(description = "한번에 조회할 갯수", example="100")
-		private int perpage;
-		@Schema(description = "전체 갯수", example="1")
-		private int listsize;
-
-		@Schema(description = "리스트", example="상세정보가 담긴 리스트")
-		private List<SelectResResDto> list;
-
-	}
-	*/
-
 }

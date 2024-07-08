@@ -6,14 +6,13 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 public class TbuserDto {
 
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class LoginReqDto {
 		@Schema(description = "username", example="사용자 아이디")
 		@NotNull
@@ -32,8 +31,6 @@ public class TbuserDto {
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class CreateReqDto {
 		@Schema(description = "username", example="사용자 아이디")
 		@NotNull
@@ -57,12 +54,10 @@ public class TbuserDto {
 		}
 	}
 
+	@Builder
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
-	@Builder
 	public static class CreateResDto {
 		@Schema(description = "id", example="length32textnumber")
 		private String id;
@@ -71,8 +66,6 @@ public class TbuserDto {
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class UpdateReqDto {
 		@Schema(description = "id", example="")
 		@NotNull
@@ -82,6 +75,8 @@ public class TbuserDto {
 
 		@Schema(description = "deleted", example="")
 		private String deleted;
+		@Schema(description = "process", example="")
+		private String process;
 
 		@Schema(description = "nick", example="nick")
 		@Size(max=12)
@@ -99,8 +94,6 @@ public class TbuserDto {
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class SelectResDto extends CommonDto.SelectResDto {
 		@Schema(description = "title", example="")
 		private String title;
@@ -115,8 +108,6 @@ public class TbuserDto {
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class ListReqDto {
 		@Schema(description = "deleted", example="")
 		private String deleted;
@@ -125,11 +116,10 @@ public class TbuserDto {
 		@Schema(description = "code", example="")
 		private String code;
 	}
+	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class MoreListReqDto extends CommonDto.MoreListReqDto {
 		@Schema(description = "nick", example="")
 		private String nick;
@@ -139,8 +129,6 @@ public class TbuserDto {
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class PagedListReqDto extends CommonDto.PagedListReqDto {
 		@Schema(description = "nick", example="")
 		private String nick;
@@ -150,8 +138,6 @@ public class TbuserDto {
 	@Schema
 	@Getter
 	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class PagedListServDto extends CommonDto.PagedListServDto {
 		@Schema(description = "nick", example="")
 		private String nick;

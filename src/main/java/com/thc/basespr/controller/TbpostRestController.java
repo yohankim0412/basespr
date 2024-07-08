@@ -42,7 +42,8 @@ public class TbpostRestController {
     @PostMapping("")
     public ResponseEntity<TbpostDto.CreateResDto> create(@RequestBody TbpostDto.CreateReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
         logger.info("tbuserId : " + principalDetails.getTbuser().getId());
-        param = TbpostDto.CreateServDto.builder().tbuserId(principalDetails.getTbuser().getId()).build().afterBuild(param);
+        String tbuserId = principalDetails.getTbuser().getId();
+        param = TbpostDto.CreateServDto.builder().tbuserId(tbuserId).reqTbuserId(tbuserId).build().afterBuild(param);
         return ResponseEntity.status(HttpStatus.CREATED).body(tbpostService.create(param));
     }
     @PreAuthorize("hasRole('USER')")

@@ -29,7 +29,7 @@ public class TbpostServiceImpl implements TbpostService {
     }
 
     public TbpostDto.CreateResDto create(TbpostDto.CreateReqDto param){
-        return tbpostRepository.save(param.toEntity()).toAfterCreateDto();
+        return tbpostRepository.save(param.toEntity()).toCreateResDto();
     }
     public TbpostDto.CreateResDto update(TbpostDto.UpdateReqDto param){
         System.out.println(param);
@@ -49,7 +49,7 @@ public class TbpostServiceImpl implements TbpostService {
         if(param.getContent() != null) {
             tbpost.setContent(param.getContent());
         }
-        return tbpostRepository.save(tbpost).toAfterCreateDto();
+        return tbpostRepository.save(tbpost).toCreateResDto();
     }
     public TbpostDto.SelectResDto detail(CommonDto.SelectServDto param){
         TbpostDto.SelectResDto selectDto = tbpostMapper.detail(param.getId());
@@ -74,7 +74,6 @@ public class TbpostServiceImpl implements TbpostService {
         newParam.afterBuild(tbpostMapper.pagedListCount(param), param);
         return returnDto.afterBuild(addListDetails(tbpostMapper.pagedList(newParam)), newParam);
     }
-
 
     public List<TbpostDto.SelectResDto> addListDetails(List<TbpostDto.SelectResDto> a_list){
         List<TbpostDto.SelectResDto> result_list = new ArrayList<>();
