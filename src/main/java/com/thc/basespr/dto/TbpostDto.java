@@ -50,6 +50,8 @@ public class TbpostDto {
 	@Builder
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class CreateServDto extends CreateReqDto {
 		private String tbuserId;
 		private String reqTbuserId;
@@ -64,6 +66,8 @@ public class TbpostDto {
 	@Schema
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class CreateResDto {
 		@Schema(description = "id", example="length32textnumber")
 		private String id;
@@ -105,6 +109,8 @@ public class TbpostDto {
 	@Builder
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class UpdateServDto extends UpdateReqDto {
 		private String reqTbuserId;
 	}
@@ -127,15 +133,17 @@ public class TbpostDto {
 	@Schema
 	@Getter
 	@Setter
-	public static class ListReqDto {
-		@Schema(description = "deleted", example="")
-		private String deleted;
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class ListReqDto extends CommonDto.ListReqDto{
 		@Schema(description = "title", example="")
 		private String title;
 	}
 	@SuperBuilder
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class ListServDto extends ListReqDto{
 		private String reqTbuserId;
 
@@ -148,6 +156,8 @@ public class TbpostDto {
 	@Schema
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class MoreListReqDto extends CommonDto.MoreListReqDto {
 		@Schema(description = "title", example="")
 		private String title;
@@ -172,27 +182,5 @@ public class TbpostDto {
 		@Schema(description = "cate", example="")
 		private String cate;
 	}
-	/*
-	@Schema
-	@Getter
-	@Setter
-	@NoArgsConstructor
-	@AllArgsConstructor
-	public static class PagedListResDto {
-
-		@Schema(description = "요청 페이지", example="1")
-		private int callpage;
-		@Schema(description = "마지막 페이지", example="100")
-		private int lastpage;
-		@Schema(description = "한번에 조회할 갯수", example="100")
-		private int perpage;
-		@Schema(description = "전체 갯수", example="1")
-		private int listsize;
-
-		@Schema(description = "리스트", example="상세정보가 담긴 리스트")
-		private List<SelectResResDto> list;
-
-	}
-	*/
 
 }

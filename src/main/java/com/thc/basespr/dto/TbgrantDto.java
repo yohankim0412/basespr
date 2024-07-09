@@ -9,15 +9,21 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //2024-07-08 추가(클래스 처음 추가함)
 public class TbgrantDto {
 
 	/**/
 
+	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
-	public static class CreateReqDto {
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class CreateReqDto extends CommonDto.BaseDto {
 		@Schema(description = "title", example="제목")
 		@NotNull
 		@NotEmpty
@@ -35,17 +41,15 @@ public class TbgrantDto {
 		@Size(max=40000)
 		private String content;
 
-		public CreateReqDto afterBuild(CreateReqDto param) {
-			BeanUtils.copyProperties(param, this);
-			return this;
-		}
 		public Tbgrant toEntity() {
 			return Tbgrant.of(title, cate, content);
 		}
 	}
-	@Builder
+	@SuperBuilder
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class CreateServDto extends CreateReqDto {
 		private String reqTbuserId;
 
@@ -55,19 +59,24 @@ public class TbgrantDto {
 		}
 	}
 
+	@Builder
 	@Schema
 	@Getter
 	@Setter
-	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class CreateResDto {
 		@Schema(description = "id", example="length32textnumber")
 		private String id;
 	}
 
+	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
-	public static class UpdateReqDto {
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class UpdateReqDto extends CommonDto.BaseDto {
 		@Schema(description = "id", example="")
 		@NotNull
 		@NotEmpty
@@ -88,15 +97,12 @@ public class TbgrantDto {
 		@Schema(description = "content", example="내용")
 		@Size(max=40000)
 		private String content;
-
-		public UpdateReqDto afterBuild(UpdateReqDto param) {
-			BeanUtils.copyProperties(param, this);
-			return this;
-		}
 	}
-	@Builder
+	@SuperBuilder
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class UpdateServDto extends UpdateReqDto {
 		private String reqTbuserId;
 	}
@@ -111,13 +117,20 @@ public class TbgrantDto {
 		private String cate;
 		@Schema(description = "content", example="")
 		private String content;
+
+		private String[][] types = TbgrantpartDto.cates;
+
+		@Schema(description = "tbgrantparts", example="")
+		private List<TbgrantpartDto.SelectResDto> tbgrantparts = new ArrayList<>();
 	}
 
 	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
-	public static class ListReqDto extends CommonDto.ListReqDto{
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class ListReqDto extends CommonDto.ListReqDto {
 		@Schema(description = "title", example="")
 		private String title;
 		@Schema(description = "cate", example="")
@@ -126,18 +139,17 @@ public class TbgrantDto {
 	@SuperBuilder
 	@Getter
 	@Setter
-	public static class ListServDto extends ListReqDto{
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class ListServDto extends ListReqDto {
 		private String reqTbuserId;
-
-		public ListReqDto afterBuild(ListReqDto param) {
-			BeanUtils.copyProperties(param, this);
-			return this;
-		}
 	}
 	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class MoreListReqDto extends CommonDto.MoreListReqDto {
 		@Schema(description = "title", example="")
 		private String title;
@@ -147,22 +159,30 @@ public class TbgrantDto {
 	@SuperBuilder
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class MoreListServDto extends MoreListReqDto {
 		private String reqTbuserId;
 	}
 
+	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class PagedListReqDto extends CommonDto.PagedListReqDto {
 		@Schema(description = "title", example="")
 		private String title;
 		@Schema(description = "cate", example="")
 		private String cate;
 	}
+	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class PagedListServDto extends CommonDto.PagedListServDto {
 		private String reqTbuserId;
 		@Schema(description = "title", example="")

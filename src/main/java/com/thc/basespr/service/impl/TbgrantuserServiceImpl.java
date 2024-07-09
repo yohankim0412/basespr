@@ -58,7 +58,7 @@ public class TbgrantuserServiceImpl implements TbgrantuserService {
     }
 
     public List<TbgrantuserDto.SelectResDto> moreList(TbgrantuserDto.MoreListReqDto param){
-        param.afterBuild();
+        //param.afterBuild();
         logger.info(param.getCursor());
         return addListDetails(tbgrantuserMapper.moreList(param));
     }
@@ -66,8 +66,8 @@ public class TbgrantuserServiceImpl implements TbgrantuserService {
     public CommonDto.PagedListResDto<TbgrantuserDto.SelectResDto> pagedlist(TbgrantuserDto.PagedListReqDto param){
         CommonDto.PagedListResDto<TbgrantuserDto.SelectResDto> returnDto = new CommonDto.PagedListResDto<>();
         TbgrantuserDto.PagedListServDto newParam = new TbgrantuserDto.PagedListServDto();
-        newParam.afterBuild(tbgrantuserMapper.pagedListCount(param), param);
-        return returnDto.afterBuild(addListDetails(tbgrantuserMapper.pagedList(newParam)), newParam);
+        //newParam.afterBuild(tbgrantuserMapper.pagedListCount(param), param);
+        return returnDto.init(addListDetails(tbgrantuserMapper.pagedList(newParam)), newParam);
     }
 
     public List<TbgrantuserDto.SelectResDto> addListDetails(List<TbgrantuserDto.SelectResDto> a_list){

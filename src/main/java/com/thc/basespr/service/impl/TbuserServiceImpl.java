@@ -100,7 +100,7 @@ public class TbuserServiceImpl implements TbuserService {
     }
 
     public List<TbuserDto.SelectResDto> moreList(TbuserDto.MoreListReqDto param){
-        param.afterBuild();
+        param.init();
         logger.info(param.getCursor());
         return addListDetails(tbuserMapper.moreList(param));
     }
@@ -108,8 +108,8 @@ public class TbuserServiceImpl implements TbuserService {
     public CommonDto.PagedListResDto<TbuserDto.SelectResDto> pagedlist(TbuserDto.PagedListReqDto param){
         CommonDto.PagedListResDto<TbuserDto.SelectResDto> returnDto = new CommonDto.PagedListResDto<>();
         TbuserDto.PagedListServDto newParam = new TbuserDto.PagedListServDto();
-        newParam.afterBuild(tbuserMapper.pagedListCount(param), param);
-        return returnDto.afterBuild(addListDetails(tbuserMapper.pagedList(newParam)), newParam);
+        newParam.init(tbuserMapper.pagedListCount(param), param);
+        return returnDto.init(addListDetails(tbuserMapper.pagedList(newParam)), newParam);
     }
 
     public List<TbuserDto.SelectResDto> addListDetails(List<TbuserDto.SelectResDto> a_list){

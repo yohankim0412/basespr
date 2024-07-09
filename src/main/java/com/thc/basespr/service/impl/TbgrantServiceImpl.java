@@ -21,18 +21,21 @@ public class TbgrantServiceImpl implements TbgrantService {
 
     private final TbgrantRepository tbgrantRepository;
     private final TbgrantMapper tbgrantMapper;
+    //private final TbgrantpartService tbgrantpartService;
     public TbgrantServiceImpl(
             TbgrantRepository tbgrantRepository
             ,TbgrantMapper tbgrantMapper
+            //,TbgrantpartService tbgrantpartService
     ) {
         this.tbgrantRepository = tbgrantRepository;
         this.tbgrantMapper = tbgrantMapper;
+        //this.tbgrantpartService = tbgrantpartService;
     }
 
-    public TbgrantDto.CreateResDto create(TbgrantDto.CreateReqDto param){
+    public TbgrantDto.CreateResDto create(TbgrantDto.CreateServDto param){
         return tbgrantRepository.save(param.toEntity()).toCreateResDto();
     }
-    public TbgrantDto.CreateResDto update(TbgrantDto.UpdateReqDto param){
+    public TbgrantDto.CreateResDto update(TbgrantDto.UpdateServDto param){
         System.out.println(param);
         Tbgrant tbgrant = tbgrantRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException(""));
         if(param.getDeleted() != null) {
@@ -49,28 +52,32 @@ public class TbgrantServiceImpl implements TbgrantService {
         }
         return tbgrantRepository.save(tbgrant).toCreateResDto();
     }
+    public TbgrantDto.CreateResDto delete(CommonDto.DeleteServDto param){
+        TbgrantDto.UpdateServDto newParam = TbgrantDto.UpdateServDto.builder().id(param.getId()).deleted("Y").build();
+        return update(newParam);
+    }
     public TbgrantDto.SelectResDto detail(CommonDto.SelectServDto param){
         TbgrantDto.SelectResDto selectDto = tbgrantMapper.detail(param.getId());
+        //selectDto.setTbgrantparts(tbgrantpartService.list(TbgrantpartDto.ListReqDto.builder().tbgrantId(selectDto.getId()).build()));
+
         return selectDto;
     }
 
-    public List<TbgrantDto.SelectResDto> list(TbgrantDto.ListReqDto param){
-        logger.info("reqTbuserId : " + ((TbgrantDto.ListServDto) param).getReqTbuserId());
+    public List<TbgrantDto.SelectResDto> list(TbgrantDto.ListServDto param){
         List<TbgrantDto.SelectResDto> list = tbgrantMapper.list(param);
         return addListDetails(list);
     }
 
-    public List<TbgrantDto.SelectResDto> moreList(TbgrantDto.MoreListReqDto param){
-        param.afterBuild();
-        logger.info(param.getCursor());
+    public List<TbgrantDto.SelectResDto> moreList(TbgrantDto.MoreListServDto param){
+        param.init();
         return addListDetails(tbgrantMapper.moreList(param));
     }
 
-    public CommonDto.PagedListResDto<TbgrantDto.SelectResDto> pagedlist(TbgrantDto.PagedListReqDto param){
+    public CommonDto.PagedListResDto<TbgrantDto.SelectResDto> pagedlist(TbgrantDto.PagedListServDto param){
         CommonDto.PagedListResDto<TbgrantDto.SelectResDto> returnDto = new CommonDto.PagedListResDto<>();
         TbgrantDto.PagedListServDto newParam = new TbgrantDto.PagedListServDto();
-        newParam.afterBuild(tbgrantMapper.pagedListCount(param), param);
-        return returnDto.afterBuild(addListDetails(tbgrantMapper.pagedList(newParam)), newParam);
+        newParam.init(tbgrantMapper.pagedListCount(param), param);
+        return returnDto.init(addListDetails(tbgrantMapper.pagedList(newParam)), newParam);
     }
 
     public List<TbgrantDto.SelectResDto> addListDetails(List<TbgrantDto.SelectResDto> a_list){

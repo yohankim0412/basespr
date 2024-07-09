@@ -12,7 +12,7 @@ import org.springframework.beans.BeanUtils;
 //2024-07-08 추가(클래스 처음 추가함)
 public class TbgrantpartDto {
 
-	public static String[][] types = {
+	public static String[][] cates = {
 			{"tbgrant","접근권한"}
 			,{"tbuser", "사용자"}
 

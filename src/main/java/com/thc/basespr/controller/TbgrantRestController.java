@@ -33,49 +33,107 @@ public class TbgrantRestController {
         this.tbgrantService = tbgrantService;
     }
 
-    @Operation(summary = "접근권한 작성",
-            description = "접근권한 작성 컨트롤러 (모두 접근 가능) <br />"
+    @Operation(summary = "접근권한 생성",
+            description = "접근권한 생성 컨트롤러 (가입자만 접근 가능) <br />"
                     + "@param TbgrantDto.CreateReqDto <br />"
                     + "@return HttpStatus.CREATED(201) ResponseEntity\\<TbgrantDto.CreateResDto\\> <br />"
-                    + "@exception 정보 없음 <br />"
+                    + "@exception 필수 파라미터 누락하였을 때 등 <br />"
     )
     @PreAuthorize("hasRole('USER')")
     @PostMapping("")
     public ResponseEntity<TbgrantDto.CreateResDto> create(@RequestBody TbgrantDto.CreateReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
         logger.info("tbuserId : " + principalDetails.getTbuser().getId());
         String tbuserId = principalDetails.getTbuser().getId();
-        param = TbgrantDto.CreateServDto.builder().reqTbuserId(tbuserId).build().afterBuild(param);
-        return ResponseEntity.status(HttpStatus.CREATED).body(tbgrantService.create(param));
+        TbgrantDto.CreateServDto newParam = (TbgrantDto.CreateServDto) TbgrantDto.CreateServDto.builder().reqTbuserId(tbuserId).build().afterBuild(param);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tbgrantService.create(newParam));
     }
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/admin")
+    public ResponseEntity<TbgrantDto.CreateResDto> aCreate(@RequestBody TbgrantDto.CreateReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        logger.info("tbuserId : " + principalDetails.getTbuser().getId());
+        String tbuserId = principalDetails.getTbuser().getId();
+        return create(param, principalDetails);
+    }
+
+    @Operation(summary = "접근권한 수정",
+            description = "접근권한 수정 컨트롤러 (가입자만 접근 가능) <br />"
+                    + "@param TbgrantDto.UpdateReqDto <br />"
+                    + "@return HttpStatus.OK(200) ResponseEntity\\<TbgrantDto.CreateResDto\\> <br />"
+                    + "@exception 해당 자료 없을 때 등 <br />"
+    )
     @PreAuthorize("hasRole('USER')")
     @PutMapping("")
     public ResponseEntity<TbgrantDto.CreateResDto> update(@RequestBody TbgrantDto.UpdateReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
         logger.info("reqTbuserId : " + principalDetails.getTbuser().getId());
-        param = TbgrantDto.UpdateServDto.builder().reqTbuserId(principalDetails.getTbuser().getId()).build().afterBuild(param);
-        return ResponseEntity.status(HttpStatus.OK).body(tbgrantService.update(param));
+        TbgrantDto.UpdateServDto newParam = (TbgrantDto.UpdateServDto) TbgrantDto.UpdateServDto.builder().reqTbuserId(principalDetails.getTbuser().getId()).build().afterBuild(param);
+        return ResponseEntity.status(HttpStatus.OK).body(tbgrantService.update(newParam));
     }
+
+    @Operation(summary = "접근권한 삭제",
+            description = "접근권한 삭제 컨트롤러 (가입자만 접근 가능) <br />"
+                    + "@param TbgrantDto.UpdateReqDto <br />"
+                    + "@return HttpStatus.OK(200) ResponseEntity\\<TbgrantDto.CreateResDto\\> <br />"
+                    + "@exception 해당 자료 없을 때 등 <br />"
+    )
+    @PreAuthorize("hasRole('USER')")
+    @DeleteMapping("")
+    public ResponseEntity<TbgrantDto.CreateResDto> delete(@RequestBody CommonDto.DeleteReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        logger.info("reqTbuserId : " + principalDetails.getTbuser().getId());
+        CommonDto.DeleteServDto newParam = (CommonDto.DeleteServDto) CommonDto.DeleteServDto.builder().reqTbuserId(principalDetails.getTbuser().getId()).build().afterBuild(param);
+        return ResponseEntity.status(HttpStatus.OK).body(tbgrantService.delete(newParam));
+    }
+
+    @Operation(summary = "접근권한 정보 조회",
+            description = "접근권한 정보 조회 컨트롤러 (가입자만 접근 가능) <br />"
+                    + "@param TbgrantDto.SelectReqDto <br />"
+                    + "@return HttpStatus.OK(200) ResponseEntity\\<TbgrantDto.SelectResDto\\> <br />"
+                    + "@exception 해당 자료 없을 때 등 <br />"
+    )
     @PreAuthorize("permitAll()")
     @GetMapping("")
     public ResponseEntity<TbgrantDto.SelectResDto> detail(@Valid CommonDto.SelectReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
         logger.info("reqTbuserId : " + principalDetails.getTbuser().getId());
-        param = CommonDto.SelectServDto.builder().reqTbuserId(principalDetails.getTbuser().getId()).build().afterBuild(param);
-        return ResponseEntity.status(HttpStatus.OK).body(tbgrantService.detail((CommonDto.SelectServDto)param));
+        CommonDto.SelectServDto newParam = (CommonDto.SelectServDto) CommonDto.SelectServDto.builder().reqTbuserId(principalDetails.getTbuser().getId()).build().afterBuild(param);
+        return ResponseEntity.status(HttpStatus.OK).body(tbgrantService.detail(newParam));
     }
+
+    @Operation(summary = "접근권한 목록(전체) 조회",
+            description = "접근권한 목록(전체) 조회 컨트롤러 (가입자만 접근 가능) <br />"
+                    + "@param TbgrantDto.ListReqDto <br />"
+                    + "@return HttpStatus.OK(200) ResponseEntity\\<List<TbgrantDto.SelectResDto>\\> <br />"
+                    + "@exception - <br />"
+    )
     @PreAuthorize("permitAll()")
     @GetMapping("/list")
     public ResponseEntity<List<TbgrantDto.SelectResDto>> list(@Valid TbgrantDto.ListReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
         logger.info("reqTbuserId : " + principalDetails.getTbuser().getId());
-        TbgrantDto.ListServDto param2 = (TbgrantDto.ListServDto) TbgrantDto.ListServDto.builder().reqTbuserId(principalDetails.getTbuser().getId()).build().afterBuild(param);
-        return ResponseEntity.status(HttpStatus.OK).body(tbgrantService.list(param2));
+        TbgrantDto.ListServDto newParam = (TbgrantDto.ListServDto) TbgrantDto.ListServDto.builder().reqTbuserId(principalDetails.getTbuser().getId()).build().afterBuild(param);
+        return ResponseEntity.status(HttpStatus.OK).body(tbgrantService.list(newParam));
     }
+
+    @Operation(summary = "접근권한 목록(스크롤) 조회",
+            description = "접근권한 목록(스크롤) 조회 컨트롤러 (가입자만 접근 가능) <br />"
+                    + "@param TbgrantDto.MoreListReqDto <br />"
+                    + "@return HttpStatus.OK(200) ResponseEntity\\<List<TbgrantDto.SelectResDto>\\> <br />"
+                    + "@exception - <br />"
+    )
     @GetMapping("/mlist")
     public ResponseEntity<List<TbgrantDto.SelectResDto>> mlist(@Valid TbgrantDto.MoreListReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
-        logger.info("mlist : " + param);
-        return ResponseEntity.status(HttpStatus.OK).body(tbgrantService.moreList(param));
+        logger.info("reqTbuserId : " + principalDetails.getTbuser().getId());
+        TbgrantDto.MoreListServDto newParam = (TbgrantDto.MoreListServDto) TbgrantDto.MoreListServDto.builder().reqTbuserId(principalDetails.getTbuser().getId()).build().afterBuild(param);
+        return ResponseEntity.status(HttpStatus.OK).body(tbgrantService.moreList(newParam));
     }
+
+    @Operation(summary = "접근권한 목록(페이지) 조회",
+            description = "접근권한 목록(페이지) 조회 컨트롤러 (가입자만 접근 가능) <br />"
+                    + "@param TbgrantDto.PagedListReqDto <br />"
+                    + "@return HttpStatus.OK(200) ResponseEntity\\<List<CommonDto.PagedListResDto>\\> <br />"
+                    + "@exception - <br />"
+    )
     @GetMapping("/plist")
     public ResponseEntity<CommonDto.PagedListResDto> plist(@Valid TbgrantDto.PagedListReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
-        logger.info("plist : " + param);
-        return ResponseEntity.status(HttpStatus.OK).body(tbgrantService.pagedlist(param));
+        logger.info("reqTbuserId : " + principalDetails.getTbuser().getId());
+        TbgrantDto.PagedListServDto newParam = (TbgrantDto.PagedListServDto) TbgrantDto.PagedListServDto.builder().reqTbuserId(principalDetails.getTbuser().getId()).build().afterBuild(param);
+        return ResponseEntity.status(HttpStatus.OK).body(tbgrantService.pagedlist(newParam));
     }
 }

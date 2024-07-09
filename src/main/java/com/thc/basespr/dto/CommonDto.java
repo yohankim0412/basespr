@@ -11,15 +11,52 @@ import java.util.List;
 
 public class CommonDto {
 
+	//2024-07-09 추가 클래스
+	@SuperBuilder
+	@Schema
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class BaseDto {
+		String empty;
+		public BaseDto afterBuild(BaseDto param) {
+			BeanUtils.copyProperties(param, this);
+			return this;
+		}
+	}
 
 	//2024-07-04 추가 클래스
 	@Builder
 	@Schema
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class UrlResDto {
 		@Schema(description = "url", example="")
 		private String url;
+	}
+
+	//2024-07-09 추가 클래스
+	@SuperBuilder
+	@Schema
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class DeleteReqDto extends BaseDto {
+		@Schema(description = "id", example="")
+		private String id;
+	}
+	//2024-07-09 추가 클래스
+	@SuperBuilder
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class DeleteServDto extends CommonDto.DeleteReqDto {
+		private String reqTbuserId;
 	}
 
 	//2024-07-04 추가 클래스
@@ -27,19 +64,18 @@ public class CommonDto {
 	@Schema
 	@Getter
 	@Setter
-	public static class SelectReqDto {
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class SelectReqDto extends BaseDto {
 		@Schema(description = "id", example="")
 		private String id;
-
-		public SelectReqDto afterBuild(SelectReqDto param) {
-			BeanUtils.copyProperties(param, this);
-			return this;
-		}
 	}
 	//2024-07-04 추가 클래스
 	@SuperBuilder
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class SelectServDto extends SelectReqDto {
 		@Schema(description = "reqTbuserId", example="")
 		private String reqTbuserId;
@@ -48,6 +84,8 @@ public class CommonDto {
 	@Schema
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class SelectResDto {
 		@Schema(description = "id", example="")
 		private String id;
@@ -63,7 +101,9 @@ public class CommonDto {
 	@Schema
 	@Getter
 	@Setter
-	public static class ListReqDto {
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class ListReqDto extends BaseDto {
 		@Schema(description = "deleted", example="")
 		private String deleted;
 		@Schema(description = "process", example="")
@@ -73,12 +113,23 @@ public class CommonDto {
 		@Schema(description = "fdate", example="")
 		private String fdate;
 	}
+	@SuperBuilder
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class ListServDto extends ListReqDto {
+		@Schema(description = "reqTbuserId", example="")
+		private String reqTbuserId;
+	}
 
 	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
-	public static class MoreListReqDto {
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class MoreListReqDto extends BaseDto {
 		@Schema(description = "deleted", example="")
 		private String deleted;
 		@Schema(description = "process", example="")
@@ -97,7 +148,7 @@ public class CommonDto {
 		@Schema(description = "orderway", example="")
 		private String orderway;
 
-		public MoreListReqDto afterBuild(){
+		public MoreListReqDto init(){
 			if(perpage == null || perpage <= 0){
 				setPerpage(10);
 			}
@@ -115,10 +166,13 @@ public class CommonDto {
 			return this;
 		}
 	}
+	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
-	public static class PagedListReqDto {
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class PagedListReqDto extends BaseDto {
 		@Schema(description = "deleted", example="")
 		private String deleted;
 		@Schema(description = "process", example="")
@@ -138,9 +192,13 @@ public class CommonDto {
 		private String orderway;
 	}
 
+	@SuperBuilder
+	@Schema
 	@Getter
 	@Setter
-	public static class PagedListServDto extends PagedListReqDto{
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class PagedListServDto extends PagedListReqDto {
 		@Schema(description = "offset", example="")
 		private int offset;
 		@Schema(description = "lastpage", example="")
@@ -148,7 +206,7 @@ public class CommonDto {
 		@Schema(description = "listsize", example="")
 		private int listsize;
 
-		public PagedListServDto afterBuild(int listsize, PagedListReqDto param){
+		public PagedListServDto init(int listsize, PagedListReqDto param){
 			BeanUtils.copyProperties(param, this);
 
 			if(getPerpage() == null || getPerpage() <= 0){
@@ -201,7 +259,7 @@ public class CommonDto {
 		@Schema(description = "리스트", example="상세정보가 담긴 리스트")
 		private List<T> list;
 
-		public PagedListResDto<T> afterBuild(List<T> list, PagedListServDto param){
+		public PagedListResDto<T> init(List<T> list, PagedListServDto param){
 			setList(list);
 			setCallpage(param.getCallpage());
 			setLastpage(param.getLastpage());
