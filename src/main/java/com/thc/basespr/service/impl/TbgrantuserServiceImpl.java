@@ -2,6 +2,7 @@ package com.thc.basespr.service.impl;
 
 import com.thc.basespr.domain.Tbgrantuser;
 import com.thc.basespr.dto.CommonDto;
+import com.thc.basespr.dto.TbgrantDto;
 import com.thc.basespr.dto.TbgrantuserDto;
 import com.thc.basespr.mapper.TbgrantuserMapper;
 import com.thc.basespr.repository.TbgrantuserRepository;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-//2024-07-08 추가(클래스 처음 추가함)
+//2024-07-09 추가(클래스 처음 추가함)
 @Service
 public class TbgrantuserServiceImpl implements TbgrantuserService {
 
@@ -29,10 +30,12 @@ public class TbgrantuserServiceImpl implements TbgrantuserService {
         this.tbgrantuserMapper = tbgrantuserMapper;
     }
 
-    public TbgrantuserDto.CreateResDto create(TbgrantuserDto.CreateReqDto param){
+    /**/
+
+    public TbgrantuserDto.CreateResDto create(TbgrantuserDto.CreateServDto param){
         return tbgrantuserRepository.save(param.toEntity()).toCreateResDto();
     }
-    public TbgrantuserDto.CreateResDto update(TbgrantuserDto.UpdateReqDto param){
+    public TbgrantuserDto.CreateResDto update(TbgrantuserDto.UpdateServDto param){
         System.out.println(param);
         Tbgrantuser tbgrantuser = tbgrantuserRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException(""));
         if(param.getDeleted() != null) {
@@ -46,27 +49,40 @@ public class TbgrantuserServiceImpl implements TbgrantuserService {
         }
         return tbgrantuserRepository.save(tbgrantuser).toCreateResDto();
     }
+    public TbgrantuserDto.CreateResDto delete(CommonDto.DeleteServDto param){
+        TbgrantuserDto.UpdateServDto newParam = TbgrantuserDto.UpdateServDto.builder().id(param.getId()).deleted("Y").build();
+        return update(newParam);
+    }
+    public TbgrantuserDto.CreateResDto deletes(CommonDto.DeletesServDto param){
+        int count = 0;
+        for(String each : param.getIds()){
+            TbgrantuserDto.UpdateServDto newParam = TbgrantuserDto.UpdateServDto.builder().id(each).deleted("Y").build();
+            TbgrantuserDto.CreateResDto result = update(newParam);
+            if(!(result.getId()).isEmpty()) {
+                count++;
+            }
+        }
+        return TbgrantuserDto.CreateResDto.builder().id(count + "").build();
+    }
     public TbgrantuserDto.SelectResDto detail(CommonDto.SelectServDto param){
         TbgrantuserDto.SelectResDto selectDto = tbgrantuserMapper.detail(param.getId());
         return selectDto;
     }
 
-    public List<TbgrantuserDto.SelectResDto> list(TbgrantuserDto.ListReqDto param){
-        logger.info("reqTbuserId : " + ((TbgrantuserDto.ListServDto) param).getReqTbuserId());
+    public List<TbgrantuserDto.SelectResDto> list(TbgrantuserDto.ListServDto param){
         List<TbgrantuserDto.SelectResDto> list = tbgrantuserMapper.list(param);
         return addListDetails(list);
     }
 
-    public List<TbgrantuserDto.SelectResDto> moreList(TbgrantuserDto.MoreListReqDto param){
-        //param.afterBuild();
-        logger.info(param.getCursor());
+    public List<TbgrantuserDto.SelectResDto> moreList(TbgrantuserDto.MoreListServDto param){
+        param.init();
         return addListDetails(tbgrantuserMapper.moreList(param));
     }
 
-    public CommonDto.PagedListResDto<TbgrantuserDto.SelectResDto> pagedlist(TbgrantuserDto.PagedListReqDto param){
+    public CommonDto.PagedListResDto<TbgrantuserDto.SelectResDto> pagedlist(TbgrantuserDto.PagedListServDto param){
         CommonDto.PagedListResDto<TbgrantuserDto.SelectResDto> returnDto = new CommonDto.PagedListResDto<>();
         TbgrantuserDto.PagedListServDto newParam = new TbgrantuserDto.PagedListServDto();
-        //newParam.afterBuild(tbgrantuserMapper.pagedListCount(param), param);
+        newParam.init(tbgrantuserMapper.pagedListCount(param), param);
         return returnDto.init(addListDetails(tbgrantuserMapper.pagedList(newParam)), newParam);
     }
 

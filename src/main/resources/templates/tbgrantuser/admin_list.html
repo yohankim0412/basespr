@@ -5,16 +5,16 @@
 </head>
 <body>
 
-<script id="list_info_tbgrant" type="text/x-handlebars-template">
-    {{#resultData_tbgrant}}
+<script id="list_info_tbgrantuser" type="text/x-handlebars-template">
+    {{#resultData_tbgrantuser}}
     <tr class="gradeA">
         <td>
             <input class="input_chk_delete_each" type="checkbox" keyword="{{id}}" id="input_chk_delete_each_{{id}}" onclick="listener_chk_delete(this)" />
         </td>
         <td><font class="font_order"></font></td>
         <td><font class="font_deleted_{{deleted}} chk_deleted_{{id}}">{{deleted}}</font></td>
-        <td><font class="font_cate_{{cate}}">{{cate}}</font></td>
-        <td class="cursor_pointer" onclick="location.href='/tbgrant/admin_detail/{{id}}';">{{title}}</td>
+        <td class="cursor_pointer" onclick="location.href='/tbgrantuser/admin_detail/{{id}}';">{{tbuserUsername}}</td>
+        <td class="cursor_pointer" onclick="location.href='/tbgrantuser/admin_detail/{{id}}';">{{tbuserNick}}</td>
         <td>{{createdAt}} / {{modifiedAt}}
             <div class="hide">
                 <input class="input_cursor_createdAt" value="{{createdAt}}"/>
@@ -22,11 +22,11 @@
             </div>
         </td>
     </tr>
-    {{/resultData_tbgrant}}
+    {{/resultData_tbgrantuser}}
 </script>
 <script type="text/javascript">
-    var list_info_tbgrant = $("#list_info_tbgrant").html();
-    var list_info_tbgrant_template = Handlebars.compile(list_info_tbgrant);
+    var list_info_tbgrantuser = $("#list_info_tbgrantuser").html();
+    var list_info_tbgrantuser_template = Handlebars.compile(list_info_tbgrantuser);
 </script>
 
 <div id="wrapper">
@@ -38,16 +38,19 @@
         <body th:replace="~{@{includes/admin/navbar_top}}"></body>
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>접근권한</h2>
+                <h2>접근권한 사용자</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="/admin">Home</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/tbgrant/admin_list">권한 관련</a>
+                        <a href="/tbgrantuser/admin_list">권한 관련</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="javascript:location_href_path_param('/tbgrant/admin_detail/', getIdFromUrl(null))">접근권한(<font class="font_tbgrant_title"></font>) 상세</a>
                     </li>
                     <li class="breadcrumb-item active">
-                        <strong>접근권한 목록</strong>
+                        <strong>접근권한 사용자 목록</strong>
                     </li>
                 </ol>
             </div>
@@ -71,16 +74,9 @@
                                     <option value="Y">삭제</option>
                                 </select>
                             </div>
-                            <label class="col-sm-2 col-form-label">구분</label>
-                            <div class="col-sm-4">
-                                <select class="select_search_keyword form-control m-b" keyword="cate" id="search_cate" onchange="listener_keyword_changed()">
-                                    <option value="" selected="selected">전체</option>
-                                    <option value="top">최고관리자</option>
-                                    <option value="middle">중간관리자</option>
-                                    <option value="normal">일반관리자</option>
-                                </select>
-                            </div>
-                            <!--<label class="col-sm-6 col-form-label"></label>-->
+                            <!--
+                            -->
+                            <label class="col-sm-6 col-form-label"></label>
                             <label class="col-sm-2 col-form-label">등록 시기</label>
                             <div class="col-sm-3">
                                 <input class="form-control" id="search_sdate" type="date" onchange="listener_keyword_changed()"/>
@@ -96,7 +92,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">키워드</label>
+                            <!--<label class="col-sm-2 col-form-label">키워드</label>
                             <div class="col-sm-4">
                                 <select class="form-control m-b" id="search_keyword" onchange="set_search_keyword()">
                                     <option value="10" selected="selected">제목</option>
@@ -105,7 +101,7 @@
                             <div class="col-sm-6">
                                 <input id="search_title" onchange="listener_keyword_changed();"
                                        class="form-control search_keyword_each search_keyword_each_10" type="text" placeholder="내용을 입력하세요"/>
-                            </div>
+                            </div>-->
 
                             <input type="hidden" id="cursor" />
                             <label class="col-sm-2 col-form-label">검색 기준</label>
@@ -145,29 +141,29 @@
                         </th>
                         <th>#</th>
                         <th>삭제여부</th>
-                        <th>구분</th>
-                        <th>제목</th>
+                        <th>사용자ID</th>
+                        <th>사용자nick</th>
                         <th>입력일시/수정일시</th>
                     </tr>
                     </thead>
-                    <tbody id="tbody_tbgrant_list">
+                    <tbody id="tbody_tbgrantuser_list">
                     </tbody>
                 </table>
                 <table style="width:100%">
                     <tr>
                         <td>
-                            <button class="btn btn-danger btn-sm" onclick="delete_tbgrant()">일괄삭제</button>
+                            <button class="btn btn-danger btn-sm" onclick="delete_tbgrantuser()">일괄삭제</button>
                         </td>
                         <td style="text-align: right;">
-                            <button class="btn btn-secondary btn-sm" onclick="location.href='/tbgrant/admin_create'">추가하기</button>
-                            <button class="btn btn-primary btn-sm" onclick="search_tbgrant()">더보기</button>
+                            <button class="btn btn-secondary btn-sm" onclick="location_href_path_param('/tbgrantuser/admin_create/', getIdFromUrl(null))">추가하기</button>
+                            <button class="btn btn-primary btn-sm" onclick="search_tbgrantuser()">더보기</button>
                         </td>
                     </tr>
                 </table>
             </div>
         </div>
         <script>
-            function delete_tbgrant(){
+            function delete_tbgrantuser(){
                 if (confirm("정말 삭제하시겠습니까?")) {
                 } else {
                     alert("취소");
@@ -175,7 +171,7 @@
                 }
                 let ids = listenerGetDeleteIds();
                 let _data = new Map();
-                _data.url = "/api/tbgrant/list";
+                _data.url = "/api/tbgrantuser/list";
                 _data.type = "DELETE";
                 _data.param = {
                     'ids' : ids
@@ -205,8 +201,29 @@
         <script>
             $( document ).ready(function() {
                 console.log( "ready!" );
-                search_tbgrant();
+                detail_tbgrant();
+                search_tbgrantuser();
             });
+            function detail_tbgrant(){
+                let tbgrantId = getIdFromUrl(null);
+                let _data = new Map();
+                _data.url = "/api/tbgrant";
+                _data.type = "GET";
+                _data.param = {'id':tbgrantId};
+                _data.success = function(obj_data, obj_status, obj_xhr){
+                    //alert(JSON.stringify(obj_data));
+                    let detailKeys = Object.keys(obj_data)
+                    for (let eachKey of detailKeys){
+                        $(".font_tbgrant_" + eachKey).text(obj_data[eachKey]);
+                        $("#detail_tbgrant_" + eachKey).val(obj_data[eachKey]);
+                        $("#img_tbgrant_" + eachKey).attr("src", obj_data[eachKey]);
+                    }
+                }
+                _data.error = function(obj_data, obj_status, obj_xhr){
+                    alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+                }
+                func_ajax(_data);
+            }
         </script>
 
         <script>
@@ -214,7 +231,7 @@
                 $("#input_keyword_changed").val("1");
             }
 
-            function search_tbgrant(){
+            function search_tbgrantuser(){
                 let cursor = $("#cursor").val();
                 let orderway = $("#orderway").val();
                 let orderby = $("#orderby").val();
@@ -255,6 +272,7 @@
                     $("#cursor").val("");
                 }
 
+                let tbgrantId = getIdFromUrl(null);
                 let params = {
                     'deleted' : $("#search_deleted").val()
                     ,'perpage' : $("#perpage").val()
@@ -264,18 +282,18 @@
                     ,'sdate' : $("#search_sdate").val()
                     ,'fdate' : $("#search_fdate").val()
 
-                    ,'cate' : $("#search_cate").val()
+                    ,'tbgrantId' : tbgrantId
                     ,'title' : $("#search_title").val()
                 };
                 let _data = {};
-                _data.url = "/api/tbgrant/mlist";
+                _data.url = "/api/tbgrantuser/mlist";
                 _data.type = "GET";
                 _data.param = params;
                 _data.success = function(obj_data, obj_status, obj_xhr){
                     //alert(JSON.stringify(obj_data));
                     let each_list = obj_data;
                     if($("#input_keyword_changed").val() + "" === "1"){
-                        $("#tbody_tbgrant_list").html("");
+                        $("#tbody_tbgrantuser_list").html("");
                         $("#input_keyword_changed").val("");
                     }
                     if(each_list.length == 0){
@@ -283,11 +301,11 @@
                     }
 
                     if($("#orderway").val() == "desc"){
-                        $("#tbody_tbgrant_list").append(list_info_tbgrant_template({"resultData_tbgrant":each_list}));
+                        $("#tbody_tbgrantuser_list").append(list_info_tbgrantuser_template({"resultData_tbgrantuser":each_list}));
                     } else {
                         //each_list
                         each_list.reverse();
-                        $("#tbody_tbgrant_list").prepend(list_info_tbgrant_template({"resultData_tbgrant":each_list}));
+                        $("#tbody_tbgrantuser_list").prepend(list_info_tbgrantuser_template({"resultData_tbgrantuser":each_list}));
                     }
 
                     let detailKeys = Object.keys(obj_data);

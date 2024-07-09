@@ -15,6 +15,17 @@ import java.util.List;
 //2024-07-08 추가(클래스 처음 추가함)
 public class TbgrantDto {
 
+	@Schema
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class AccessReqDto {
+		private String cate;
+		private String content;
+		private String tbuserId;
+	}
+
 	/**/
 
 	@SuperBuilder
@@ -52,11 +63,7 @@ public class TbgrantDto {
 	@NoArgsConstructor
 	public static class CreateServDto extends CreateReqDto {
 		private String reqTbuserId;
-
-		@Override
-		public Tbgrant toEntity() {
-			return Tbgrant.of(getTitle(), getCate(), getContent());
-		}
+		private boolean isAdmin;
 	}
 
 	@Builder
@@ -105,6 +112,7 @@ public class TbgrantDto {
 	@NoArgsConstructor
 	public static class UpdateServDto extends UpdateReqDto {
 		private String reqTbuserId;
+		private boolean isAdmin;
 	}
 
 	@Schema
@@ -118,7 +126,7 @@ public class TbgrantDto {
 		@Schema(description = "content", example="")
 		private String content;
 
-		private String[][] types = TbgrantpartDto.cates;
+		private String[][] cates = TbgrantpartDto.cates;
 
 		@Schema(description = "tbgrantparts", example="")
 		private List<TbgrantpartDto.SelectResDto> tbgrantparts = new ArrayList<>();
@@ -143,6 +151,7 @@ public class TbgrantDto {
 	@NoArgsConstructor
 	public static class ListServDto extends ListReqDto {
 		private String reqTbuserId;
+		private boolean isAdmin;
 	}
 	@SuperBuilder
 	@Schema
@@ -163,6 +172,7 @@ public class TbgrantDto {
 	@NoArgsConstructor
 	public static class MoreListServDto extends MoreListReqDto {
 		private String reqTbuserId;
+		private boolean isAdmin;
 	}
 
 	@SuperBuilder
@@ -185,6 +195,8 @@ public class TbgrantDto {
 	@NoArgsConstructor
 	public static class PagedListServDto extends CommonDto.PagedListServDto {
 		private String reqTbuserId;
+		private boolean isAdmin;
+
 		@Schema(description = "title", example="")
 		private String title;
 		@Schema(description = "cate", example="")

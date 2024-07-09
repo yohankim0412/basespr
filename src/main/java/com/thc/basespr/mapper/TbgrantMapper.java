@@ -6,6 +6,8 @@ import java.util.List;
 
 //2024-07-08 추가(클래스 처음 추가함)
 public interface TbgrantMapper {
+	TbgrantDto.SelectResDto access(TbgrantDto.AccessReqDto param);
+	/**/
 	TbgrantDto.SelectResDto detail(String id);
 	List<TbgrantDto.SelectResDto> list(TbgrantDto.ListServDto param);
 

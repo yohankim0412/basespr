@@ -2,18 +2,24 @@ package com.thc.basespr.service;
 
 import com.thc.basespr.dto.CommonDto;
 import com.thc.basespr.dto.TbuserDto;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
+//2024-07-09 전체 수정
 @Service
 public interface TbuserService {
-    public TbuserDto.CreateResDto signup(TbuserDto.CreateReqDto param);
+    public TbuserDto.CreateResDto signup(TbuserDto.CreateServDto param);
     /**/
-    public TbuserDto.CreateResDto create(TbuserDto.CreateReqDto param);
-    public TbuserDto.CreateResDto update(TbuserDto.UpdateReqDto param);
-    public TbuserDto.SelectResDto detail(CommonDto.SelectReqDto param);
-    public List<TbuserDto.SelectResDto> list(TbuserDto.ListReqDto param);
-    public List<TbuserDto.SelectResDto> moreList(TbuserDto.MoreListReqDto param);
-    public CommonDto.PagedListResDto<TbuserDto.SelectResDto> pagedlist(TbuserDto.PagedListReqDto param);
+    public TbuserDto.CreateResDto create(TbuserDto.CreateServDto param);
+    public TbuserDto.CreateResDto update(TbuserDto.UpdateServDto param);
+    public TbuserDto.CreateResDto delete(CommonDto.DeleteServDto param);
+    public TbuserDto.CreateResDto deletes(CommonDto.DeletesServDto param);
+    public TbuserDto.SelectResDto detail(CommonDto.SelectServDto param);
+    public List<TbuserDto.SelectResDto> list(TbuserDto.ListServDto param);
+    public List<TbuserDto.SelectResDto> moreList(TbuserDto.MoreListServDto param);
+    public CommonDto.PagedListResDto<TbuserDto.SelectResDto> pagedlist(TbuserDto.PagedListServDto param);
 }

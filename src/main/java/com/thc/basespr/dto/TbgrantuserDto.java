@@ -9,52 +9,62 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //2024-07-08 추가(클래스 처음 추가함)
 public class TbgrantuserDto {
 
 	/**/
 
+	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
-	public static class CreateReqDto {
-		@Schema(description = "tbgrantId", example="tbgrantId")
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class CreateReqDto extends CommonDto.BaseDto {
+		@Schema(description = "tbgrantId", example="")
 		@NotNull
 		@NotEmpty
 		private String tbgrantId;
-		@Schema(description = "tbuserId", example="tbuserId")
+		@Schema(description = "tbuserId", example="")
 		@NotNull
 		@NotEmpty
 		private String tbuserId;
 
-		public CreateReqDto afterBuild(CreateReqDto param) {
-			BeanUtils.copyProperties(param, this);
-			return this;
-		}
 		public Tbgrantuser toEntity() {
 			return Tbgrantuser.of(tbgrantId, tbuserId);
 		}
 	}
-	@Builder
+	@SuperBuilder
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class CreateServDto extends CreateReqDto {
 		private String reqTbuserId;
+		private boolean isAdmin;
 	}
 
 	@Builder
 	@Schema
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class CreateResDto {
 		@Schema(description = "id", example="length32textnumber")
 		private String id;
 	}
 
+	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
-	public static class UpdateReqDto {
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class UpdateReqDto extends CommonDto.BaseDto {
 		@Schema(description = "id", example="")
 		@NotNull
 		@NotEmpty
@@ -66,86 +76,113 @@ public class TbgrantuserDto {
 		@Schema(description = "process", example="")
 		private String process;
 
-		@Schema(description = "tbgrantId", example="tbgrantId")
-		@NotNull
-		@NotEmpty
+		@Schema(description = "tbgrantId", example="")
 		private String tbgrantId;
-		@Schema(description = "tbuserId", example="tbuserId")
-		@NotNull
-		@NotEmpty
+		@Schema(description = "tbuserId", example="")
 		private String tbuserId;
-
-		public UpdateReqDto afterBuild(UpdateReqDto param) {
-			BeanUtils.copyProperties(param, this);
-			return this;
-		}
 	}
-	@Builder
+	@SuperBuilder
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class UpdateServDto extends UpdateReqDto {
 		private String reqTbuserId;
+		private boolean isAdmin;
 	}
 
 	@Schema
 	@Getter
 	@Setter
 	public static class SelectResDto extends CommonDto.SelectResDto {
-		@Schema(description = "title", example="")
-		private String title;
+		@Schema(description = "tbgrantId", example="")
+		private String tbgrantId;
+		@Schema(description = "tbuserId", example="")
+		private String tbuserId;
+		@Schema(description = "tbuserUsername", example="")
+		private String tbuserUsername;
+		@Schema(description = "tbuserNick", example="")
+		private String tbuserNick;
+		@Schema(description = "tbuserImg", example="")
+		private String tbuserImg;
+	}
+
+	@SuperBuilder
+	@Schema
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class ListReqDto extends CommonDto.ListReqDto {
+		@Schema(description = "tbgrantId", example="")
+		private String tbgrantId;
 		@Schema(description = "cate", example="")
 		private String cate;
 		@Schema(description = "content", example="")
 		private String content;
 	}
-
-	@SuperBuilder
-	@Schema
-	@Getter
-	@Setter
-	public static class ListReqDto {
-		@Schema(description = "deleted", example="")
-		private String deleted;
-		@Schema(description = "title", example="")
-		private String title;
-	}
 	@SuperBuilder
 	@Getter
 	@Setter
-	public static class ListServDto extends ListReqDto{
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class ListServDto extends ListReqDto {
 		private String reqTbuserId;
-
-		public ListReqDto afterBuild(ListReqDto param) {
-			BeanUtils.copyProperties(param, this);
-			return this;
-		}
+		private boolean isAdmin;
 	}
 	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class MoreListReqDto extends CommonDto.MoreListReqDto {
-		@Schema(description = "title", example="")
-		private String title;
+		@Schema(description = "tbgrantId", example="")
+		private String tbgrantId;
 		@Schema(description = "cate", example="")
 		private String cate;
+		@Schema(description = "content", example="")
+		private String content;
 	}
+	@SuperBuilder
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class MoreListServDto extends MoreListReqDto {
+		private String reqTbuserId;
+		private boolean isAdmin;
+	}
+
+	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class PagedListReqDto extends CommonDto.PagedListReqDto {
-		@Schema(description = "title", example="")
-		private String title;
+		@Schema(description = "tbgrantId", example="")
+		private String tbgrantId;
 		@Schema(description = "cate", example="")
 		private String cate;
+		@Schema(description = "content", example="")
+		private String content;
 	}
+	@SuperBuilder
 	@Schema
 	@Getter
 	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class PagedListServDto extends CommonDto.PagedListServDto {
+		private String reqTbuserId;
+		private boolean isAdmin;
+
 		@Schema(description = "title", example="")
-		private String title;
+		private String tbgrantId;
 		@Schema(description = "cate", example="")
 		private String cate;
+		@Schema(description = "content", example="")
+		private String content;
 	}
 }

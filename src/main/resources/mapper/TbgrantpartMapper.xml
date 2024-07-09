@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thc.basespr.mapper.TbgrantpartMapper">
+
+	<select id="detail" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantpartDto$SelectResDto">
+		SELECT tbgrantpart.id
+			,tbgrantpart.deleted
+			,tbgrantpart.process
+			,tbgrantpart.created_at as createdAt
+			,tbgrantpart.modified_at as modifiedAt
+			,tbgrantpart.tbgrant_id as tbgrantId
+			,tbgrantpart.cate
+			,tbgrantpart.content
+		FROM tbgrantpart
+		WHERE tbgrantpart.id = #{id}
+	</select>
+	<select id="list" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantpartDto$SelectResDto">
+		SELECT tbgrantpart.id
+		FROM tbgrantpart
+		WHERE tbgrantpart.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbgrantpart.deleted = #{deleted}</if>
+		<if test = "tbgrantId != null and tbgrantId !=''">AND tbgrantpart.tbgrant_id = #{tbgrantId}</if>
+		<if test = "cate != null and cate !=''">AND tbgrantpart.cate = #{cate}</if>
+		<if test = "content != null and content !=''">AND tbgrantpart.content = #{content}</if>
+		<if test = "sdate != null and sdate !=''">AND tbgrantpart.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbgrantpart.created_at</if>
+		ORDER BY tbgrantpart.created_at DESC;
+	</select>
+
+	<select id="moreList" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantpartDto$SelectResDto">
+		SELECT tbgrantpart.id
+		FROM tbgrantpart
+		WHERE tbgrantpart.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbgrantpart.deleted = #{deleted}</if>
+		<if test = "tbgrantId != null and tbgrantId !=''">AND tbgrantpart.tbgrant_id = #{tbgrantId}</if>
+		<if test = "cate != null and cate !=''">AND tbgrantpart.cate = #{cate}</if>
+		<if test = "content != null and content !=''">AND tbgrantpart.content = #{content}</if>
+		<if test = "sdate != null and sdate !=''">AND tbgrantpart.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbgrantpart.created_at</if>
+		<if test = "orderby =='created_at'">
+			<if test = "orderway =='desc'">
+				AND STR_TO_DATE(#{cursor}, '%Y-%m-%d %H:%i:%s.%f') > tbgrantpart.created_at ORDER BY tbgrantpart.created_at DESC
+			</if>
+			<if test = "orderway =='asc'">
+				AND tbgrantpart.created_at > STR_TO_DATE(#{cursor}, '%Y-%m-%d %H:%i:%s.%f') ORDER BY tbgrantpart.created_at ASC
+			</if>
+		</if>
+		<if test = "orderby =='title'">
+			<if test = "orderway =='desc'">
+				AND #{cursor} > tbgrantpart.title ORDER BY tbgrantpart.created_at DESC
+			</if>
+			<if test = "orderway =='asc'">
+				AND tbgrantpart.title > #{cursor} ORDER BY tbgrantpart.created_at ASC
+			</if>
+		</if>
+		LIMIT 0, #{perpage}
+	</select>
+	<select id="pagedList" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantpartDto$SelectResDto">
+		SELECT tbgrantpart.id
+		FROM tbgrantpart
+		WHERE tbgrantpart.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbgrantpart.deleted = #{deleted}</if>
+		<if test = "tbgrantId != null and tbgrantId !=''">AND tbgrantpart.tbgrant_id = #{tbgrantId}</if>
+		<if test = "cate != null and cate !=''">AND tbgrantpart.cate = #{cate}</if>
+		<if test = "content != null and content !=''">AND tbgrantpart.content = #{content}</if>
+		<if test = "sdate != null and sdate !=''">AND tbgrantpart.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbgrantpart.created_at</if>
+		<if test = "orderby =='created_at'">ORDER BY tbgrantpart.created_at </if>
+		<if test = "orderby =='title'">ORDER BY tbgrantpart.title </if>
+		<if test = "orderway =='asc'">ASC</if>
+		<if test = "orderway =='desc'">DESC</if>
+		LIMIT #{offset}, #{perpage}
+	</select>
+	<select id="pagedListCount" parameterType="hashMap" resultType="Integer">
+		SELECT count(tbgrantpart.id) as listsize
+		FROM tbgrantpart
+		WHERE tbgrantpart.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbgrantpart.deleted = #{deleted}</if>
+		<if test = "tbgrantId != null and tbgrantId !=''">AND tbgrantpart.tbgrant_id = #{tbgrantId}</if>
+		<if test = "cate != null and cate !=''">AND tbgrantpart.cate = #{cate}</if>
+		<if test = "content != null and content !=''">AND tbgrantpart.content = #{content}</if>
+		<if test = "sdate != null and sdate !=''">AND tbgrantpart.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbgrantpart.created_at</if>
+	</select>
+
+</mapper>

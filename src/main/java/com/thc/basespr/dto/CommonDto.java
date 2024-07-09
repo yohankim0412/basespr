@@ -1,8 +1,6 @@
 package com.thc.basespr.dto;
 
-import com.thc.basespr.domain.Tbpost;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.beans.BeanUtils;
@@ -24,6 +22,16 @@ public class CommonDto {
 			BeanUtils.copyProperties(param, this);
 			return this;
 		}
+	}
+	//2024-07-09 추가 클래스
+	@Builder
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class DetailServDto {
+		private String reqTbuserId;
+		private boolean isAdmin;
 	}
 
 	//2024-07-04 추가 클래스
@@ -57,6 +65,28 @@ public class CommonDto {
 	@NoArgsConstructor
 	public static class DeleteServDto extends CommonDto.DeleteReqDto {
 		private String reqTbuserId;
+		private boolean isAdmin;
+	}
+	//2024-07-09 추가 클래스
+	@SuperBuilder
+	@Schema
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class DeletesReqDto extends BaseDto {
+		@Schema(description = "ids", example="")
+		private List<String> ids;
+	}
+	//2024-07-09 추가 클래스
+	@SuperBuilder
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class DeletesServDto extends CommonDto.DeletesReqDto {
+		private String reqTbuserId;
+		private boolean isAdmin;
 	}
 
 	//2024-07-04 추가 클래스
@@ -79,6 +109,7 @@ public class CommonDto {
 	public static class SelectServDto extends SelectReqDto {
 		@Schema(description = "reqTbuserId", example="")
 		private String reqTbuserId;
+		private boolean isAdmin;
 	}
 	
 	@Schema
@@ -121,6 +152,7 @@ public class CommonDto {
 	public static class ListServDto extends ListReqDto {
 		@Schema(description = "reqTbuserId", example="")
 		private String reqTbuserId;
+		private boolean isAdmin;
 	}
 
 	@SuperBuilder

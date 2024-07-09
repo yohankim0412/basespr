@@ -40,7 +40,7 @@
             for(each of arrayEach){
                 let _param = {};
                 _param["tbgrantId"] = $("#detail_tbgrant_id").val();
-                _param["type"] = $(each).attr("title");
+                _param["cate"] = $(each).attr("title");
                 _param["content"] = $(each).attr("keyword");
                 _param["way"] = checked;
                 toggle_tbgrantpart(_param);
@@ -48,7 +48,7 @@
         } else {
             let _param = {};
             _param["tbgrantId"] = $("#detail_tbgrant_id").val();
-            _param["type"] = title;
+            _param["cate"] = title;
             _param["content"] = keyword;
             _param["way"] = checked;
             toggle_tbgrantpart(_param);
@@ -169,22 +169,22 @@
                         $("#img_tbgrant_" + eachKey).attr("src", obj_data[eachKey]);
                     }
 
-                    let types = obj_data.types;
-                    for(let i=0;i<types.length;i++){
+                    let cates = obj_data.cates;
+                    for(let i=0;i<cates.length;i++){
                         let _each = {};
                         let each_list = [];
                         _each["order"] = (i+1);
-                        _each["title"] = types[i][0];
-                        _each["content"] = types[i][1];
+                        _each["title"] = cates[i][0];
+                        _each["content"] = cates[i][1];
                         each_list.push(_each);
                         $("#tbody_tbgrantpart_list").append(list_info_tbgrantpart_template({"resultData_tbgrantpart": each_list}));
                     }
                     let tbgrantparts = obj_data.tbgrantparts;
                     for(each of tbgrantparts){
                         //alert(JSON.stringify(each));
-                        $("#input_tbgrantpart_" + each["type"] + "_" + each["content"]).prop("checked", true);
-                        //alert(each["type"]);
-                        check_chk("input_tbgrantpart_" + each["type"]);
+                        $("#input_tbgrantpart_" + each["cate"] + "_" + each["content"]).prop("checked", true);
+                        //alert(each["cate"]);
+                        check_chk("input_tbgrantpart_" + each["cate"]);
                     }
                 }
                 _data.error = function(obj_data, obj_status, obj_xhr){

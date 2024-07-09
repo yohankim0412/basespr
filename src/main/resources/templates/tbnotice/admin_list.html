@@ -5,8 +5,8 @@
 </head>
 <body>
 
-<script id="list_info_tbgrant" type="text/x-handlebars-template">
-    {{#resultData_tbgrant}}
+<script id="list_info_tbnotice" type="text/x-handlebars-template">
+    {{#resultData_tbnotice}}
     <tr class="gradeA">
         <td>
             <input class="input_chk_delete_each" type="checkbox" keyword="{{id}}" id="input_chk_delete_each_{{id}}" onclick="listener_chk_delete(this)" />
@@ -14,7 +14,7 @@
         <td><font class="font_order"></font></td>
         <td><font class="font_deleted_{{deleted}} chk_deleted_{{id}}">{{deleted}}</font></td>
         <td><font class="font_cate_{{cate}}">{{cate}}</font></td>
-        <td class="cursor_pointer" onclick="location.href='/tbgrant/admin_detail/{{id}}';">{{title}}</td>
+        <td class="cursor_pointer" onclick="location.href='/tbnotice/admin_detail/{{id}}';">{{title}}</td>
         <td>{{createdAt}} / {{modifiedAt}}
             <div class="hide">
                 <input class="input_cursor_createdAt" value="{{createdAt}}"/>
@@ -22,32 +22,32 @@
             </div>
         </td>
     </tr>
-    {{/resultData_tbgrant}}
+    {{/resultData_tbnotice}}
 </script>
 <script type="text/javascript">
-    var list_info_tbgrant = $("#list_info_tbgrant").html();
-    var list_info_tbgrant_template = Handlebars.compile(list_info_tbgrant);
+    var list_info_tbnotice = $("#list_info_tbnotice").html();
+    var list_info_tbnotice_template = Handlebars.compile(list_info_tbnotice);
 </script>
 
 <div id="wrapper">
     <body th:replace="~{@{includes/admin/nav}}"></body>
     <script>
-        $(".sidemenu_li_tbgrant").addClass("active");
+        $(".sidemenu_li_tbnotice").addClass("active");
     </script>
     <div id="page-wrapper" class="gray-bg dashbard-1">
         <body th:replace="~{@{includes/admin/navbar_top}}"></body>
         <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>접근권한</h2>
+                <h2>공지사항</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="/admin">Home</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="/tbgrant/admin_list">권한 관련</a>
+                        <a href="/tbnotice/admin_list">글 모음</a>
                     </li>
                     <li class="breadcrumb-item active">
-                        <strong>접근권한 목록</strong>
+                        <strong>공지사항 목록</strong>
                     </li>
                 </ol>
             </div>
@@ -75,9 +75,8 @@
                             <div class="col-sm-4">
                                 <select class="select_search_keyword form-control m-b" keyword="cate" id="search_cate" onchange="listener_keyword_changed()">
                                     <option value="" selected="selected">전체</option>
-                                    <option value="top">최고관리자</option>
-                                    <option value="middle">중간관리자</option>
-                                    <option value="normal">일반관리자</option>
+                                    <option value="top">상위고정</option>
+                                    <option value="normal">일반</option>
                                 </select>
                             </div>
                             <!--<label class="col-sm-6 col-form-label"></label>-->
@@ -150,24 +149,24 @@
                         <th>입력일시/수정일시</th>
                     </tr>
                     </thead>
-                    <tbody id="tbody_tbgrant_list">
+                    <tbody id="tbody_tbnotice_list">
                     </tbody>
                 </table>
                 <table style="width:100%">
                     <tr>
                         <td>
-                            <button class="btn btn-danger btn-sm" onclick="delete_tbgrant()">일괄삭제</button>
+                            <button class="btn btn-danger btn-sm" onclick="delete_tbnotice()">일괄삭제</button>
                         </td>
                         <td style="text-align: right;">
-                            <button class="btn btn-secondary btn-sm" onclick="location.href='/tbgrant/admin_create'">추가하기</button>
-                            <button class="btn btn-primary btn-sm" onclick="search_tbgrant()">더보기</button>
+                            <button class="btn btn-secondary btn-sm" onclick="location.href='/tbnotice/admin_create'">추가하기</button>
+                            <button class="btn btn-primary btn-sm" onclick="search_tbnotice()">더보기</button>
                         </td>
                     </tr>
                 </table>
             </div>
         </div>
         <script>
-            function delete_tbgrant(){
+            function delete_tbnotice(){
                 if (confirm("정말 삭제하시겠습니까?")) {
                 } else {
                     alert("취소");
@@ -175,7 +174,7 @@
                 }
                 let ids = listenerGetDeleteIds();
                 let _data = new Map();
-                _data.url = "/api/tbgrant/list";
+                _data.url = "/api/tbnotice/list";
                 _data.type = "DELETE";
                 _data.param = {
                     'ids' : ids
@@ -205,7 +204,7 @@
         <script>
             $( document ).ready(function() {
                 console.log( "ready!" );
-                search_tbgrant();
+                search_tbnotice();
             });
         </script>
 
@@ -214,7 +213,7 @@
                 $("#input_keyword_changed").val("1");
             }
 
-            function search_tbgrant(){
+            function search_tbnotice(){
                 let cursor = $("#cursor").val();
                 let orderway = $("#orderway").val();
                 let orderby = $("#orderby").val();
@@ -268,14 +267,14 @@
                     ,'title' : $("#search_title").val()
                 };
                 let _data = {};
-                _data.url = "/api/tbgrant/mlist";
+                _data.url = "/api/tbnotice/mlist";
                 _data.type = "GET";
                 _data.param = params;
                 _data.success = function(obj_data, obj_status, obj_xhr){
                     //alert(JSON.stringify(obj_data));
                     let each_list = obj_data;
                     if($("#input_keyword_changed").val() + "" === "1"){
-                        $("#tbody_tbgrant_list").html("");
+                        $("#tbody_tbnotice_list").html("");
                         $("#input_keyword_changed").val("");
                     }
                     if(each_list.length == 0){
@@ -283,11 +282,11 @@
                     }
 
                     if($("#orderway").val() == "desc"){
-                        $("#tbody_tbgrant_list").append(list_info_tbgrant_template({"resultData_tbgrant":each_list}));
+                        $("#tbody_tbnotice_list").append(list_info_tbnotice_template({"resultData_tbnotice":each_list}));
                     } else {
                         //each_list
                         each_list.reverse();
-                        $("#tbody_tbgrant_list").prepend(list_info_tbgrant_template({"resultData_tbgrant":each_list}));
+                        $("#tbody_tbnotice_list").prepend(list_info_tbnotice_template({"resultData_tbnotice":each_list}));
                     }
 
                     let detailKeys = Object.keys(obj_data);

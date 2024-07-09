@@ -1,7 +1,6 @@
 package com.thc.basespr.controller;
 
 import com.thc.basespr.dto.CommonDto;
-import com.thc.basespr.service.TbpostService;
 import com.thc.basespr.util.FileUpload;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;

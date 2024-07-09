@@ -4,23 +4,29 @@
 
 	<select id="detail" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantuserDto$SelectResDto">
 		SELECT tbgrantuser.id
-			,tbgrantuser.deleted
-			,tbgrantuser.process
-			,tbgrantuser.created_at as createdAt
-			,tbgrantuser.modified_at as modifiedAt
-			,tbgrantuser.title
-			,tbgrantuser.cate
-			,tbgrantuser.img
-			,tbgrantuser.content
-		FROM tbgrantuser
+			 ,tbgrantuser.deleted
+			 ,tbgrantuser.process
+			 ,tbgrantuser.created_at as createdAt
+			 ,tbgrantuser.modified_at as modifiedAt
+			 ,tbgrantuser.tbgrant_id as tbgrantId
+			 ,tbgrantuser.tbuser_id as tbuserId
+			 ,IF(tbuser.deleted = 'Y', '(deleted)', tbuser.username) as tbuserUsername
+			 ,IF(tbuser.deleted = 'Y', '(deleted)', tbuser.nick) as tbuserNick
+			 ,IF(tbuser.deleted = 'Y', '', tbuser.img) as tbuserImg
+		FROM tbgrantuser, tbuser
 		WHERE tbgrantuser.id = #{id}
+		  AND tbgrantuser.tbuser_id = tbuser.id
 	</select>
 	<select id="list" parameterType="hashMap" resultType="com.thc.basespr.dto.TbgrantuserDto$SelectResDto">
 		SELECT tbgrantuser.id
 		FROM tbgrantuser
 		WHERE tbgrantuser.id is not NULL
 		<if test = "deleted != null and deleted !=''">AND tbgrantuser.deleted = #{deleted}</if>
-		<if test = "title != null and title !=''">AND tbgrantuser.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "tbgrantId != null and tbgrantId !=''">AND tbgrantuser.tbgrant_id = #{tbgrantId}</if>
+		<if test = "cate != null and cate !=''">AND tbgrantuser.cate = #{cate}</if>
+		<if test = "content != null and content !=''">AND tbgrantuser.content = #{content}</if>
+		<if test = "sdate != null and sdate !=''">AND tbgrantuser.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbgrantuser.created_at</if>
 		ORDER BY tbgrantuser.created_at DESC;
 	</select>
 
@@ -29,8 +35,11 @@
 		FROM tbgrantuser
 		WHERE tbgrantuser.id is not NULL
 		<if test = "deleted != null and deleted !=''">AND tbgrantuser.deleted = #{deleted}</if>
-		<if test = "title != null and title !=''">AND tbgrantuser.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "tbgrantId != null and tbgrantId !=''">AND tbgrantuser.tbgrant_id = #{tbgrantId}</if>
 		<if test = "cate != null and cate !=''">AND tbgrantuser.cate = #{cate}</if>
+		<if test = "content != null and content !=''">AND tbgrantuser.content = #{content}</if>
+		<if test = "sdate != null and sdate !=''">AND tbgrantuser.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbgrantuser.created_at</if>
 		<if test = "orderby =='created_at'">
 			<if test = "orderway =='desc'">
 				AND STR_TO_DATE(#{cursor}, '%Y-%m-%d %H:%i:%s.%f') > tbgrantuser.created_at ORDER BY tbgrantuser.created_at DESC
@@ -54,8 +63,11 @@
 		FROM tbgrantuser
 		WHERE tbgrantuser.id is not NULL
 		<if test = "deleted != null and deleted !=''">AND tbgrantuser.deleted = #{deleted}</if>
-		<if test = "title != null and title !=''">AND tbgrantuser.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "tbgrantId != null and tbgrantId !=''">AND tbgrantuser.tbgrant_id = #{tbgrantId}</if>
 		<if test = "cate != null and cate !=''">AND tbgrantuser.cate = #{cate}</if>
+		<if test = "content != null and content !=''">AND tbgrantuser.content = #{content}</if>
+		<if test = "sdate != null and sdate !=''">AND tbgrantuser.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbgrantuser.created_at</if>
 		<if test = "orderby =='created_at'">ORDER BY tbgrantuser.created_at </if>
 		<if test = "orderby =='title'">ORDER BY tbgrantuser.title </if>
 		<if test = "orderway =='asc'">ASC</if>
@@ -67,8 +79,11 @@
 		FROM tbgrantuser
 		WHERE tbgrantuser.id is not NULL
 		<if test = "deleted != null and deleted !=''">AND tbgrantuser.deleted = #{deleted}</if>
-		<if test = "title != null and title !=''">AND tbgrantuser.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "tbgrantId != null and tbgrantId !=''">AND tbgrantuser.tbgrant_id = #{tbgrantId}</if>
 		<if test = "cate != null and cate !=''">AND tbgrantuser.cate = #{cate}</if>
+		<if test = "content != null and content !=''">AND tbgrantuser.content = #{content}</if>
+		<if test = "sdate != null and sdate !=''">AND tbgrantuser.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbgrantuser.created_at</if>
 	</select>
 
 </mapper>

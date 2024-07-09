@@ -5,11 +5,13 @@ import com.thc.basespr.domain.Tbuser;
 import com.thc.basespr.domain.TbuserRoleType;
 import com.thc.basespr.dto.CommonDto;
 import com.thc.basespr.dto.TbuserDto;
+import com.thc.basespr.exception.NoAuthorizationException;
 import com.thc.basespr.mapper.TbuserMapper;
-import com.thc.basespr.repository.TbuserRepository;
 import com.thc.basespr.repository.RoleTypeRepository;
+import com.thc.basespr.repository.TbuserRepository;
 import com.thc.basespr.repository.TbuserRoleTypeRepository;
 import com.thc.basespr.service.TbuserService;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+//2024-07-08 추가(클래스 처음 추가함)
 @Service
 public class TbuserServiceImpl implements TbuserService {
 
@@ -43,15 +46,16 @@ public class TbuserServiceImpl implements TbuserService {
         this.tbuserRoleTypeRepository = tbuserRoleTypeRepository;
     }
 
-    public TbuserDto.CreateResDto signup(TbuserDto.CreateReqDto param){
+    public TbuserDto.CreateResDto signup(TbuserDto.CreateServDto param){
         //닉네임은 그냥 자동 생성..
         String code = UUID.randomUUID().toString().replace("-", "").substring(0,12);
         param.setCode(code);
         param.setNick(code);
         return create(param);
     }
+
     /**/
-    public TbuserDto.CreateResDto create(TbuserDto.CreateReqDto param){
+    public TbuserDto.CreateResDto create(TbuserDto.CreateServDto param){
 
         //비번 암호화를 위한 코드
         String rawPassword = param.getPassword();
@@ -69,17 +73,18 @@ public class TbuserServiceImpl implements TbuserService {
 
         return tbuser.toCreateResDto();
     }
-    public TbuserDto.CreateResDto update(TbuserDto.UpdateReqDto param){
+    public TbuserDto.CreateResDto update(TbuserDto.UpdateServDto param){
         System.out.println(param);
         Tbuser tbuser = tbuserRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException(""));
+
+        //권한 확인
+        if(!param.isAdmin() && !(param.getReqTbuserId()).equals(tbuser.getId())){ throw new NoAuthorizationException(""); }
+
         if(param.getDeleted() != null) {
             tbuser.setDeleted(param.getDeleted());
         }
         if(param.getNick() != null) {
             tbuser.setNick(param.getNick());
-        }
-        if(param.getPhone() != null) {
-            tbuser.setPhone(param.getPhone());
         }
         if(param.getImg() != null) {
             tbuser.setImg(param.getImg());
@@ -89,33 +94,47 @@ public class TbuserServiceImpl implements TbuserService {
         }
         return tbuserRepository.save(tbuser).toCreateResDto();
     }
-    public TbuserDto.SelectResDto detail(CommonDto.SelectReqDto param){
+    public TbuserDto.CreateResDto delete(CommonDto.DeleteServDto param){
+        TbuserDto.UpdateServDto newParam = TbuserDto.UpdateServDto.builder().id(param.getId()).deleted("Y").build();
+        return update(newParam);
+    }
+    public TbuserDto.CreateResDto deletes(CommonDto.DeletesServDto param){
+        int count = 0;
+        for(String each : param.getIds()){
+            TbuserDto.UpdateServDto newParam = TbuserDto.UpdateServDto.builder().id(each).deleted("Y").build();
+            TbuserDto.CreateResDto result = update(newParam);
+            if(!(result.getId()).isEmpty()) {
+                count++;
+            }
+        }
+        return TbuserDto.CreateResDto.builder().id(count + "").build();
+    }
+    public TbuserDto.SelectResDto detail(CommonDto.SelectServDto param){
         TbuserDto.SelectResDto selectDto = tbuserMapper.detail(param.getId());
         return selectDto;
     }
 
-    public List<TbuserDto.SelectResDto> list(TbuserDto.ListReqDto param){
+    public List<TbuserDto.SelectResDto> list(TbuserDto.ListServDto param){
         List<TbuserDto.SelectResDto> list = tbuserMapper.list(param);
-        return addListDetails(list);
+        return addListDetails(list, CommonDto.DetailServDto.builder().reqTbuserId(param.getReqTbuserId()).isAdmin(param.isAdmin()).build());
     }
 
-    public List<TbuserDto.SelectResDto> moreList(TbuserDto.MoreListReqDto param){
+    public List<TbuserDto.SelectResDto> moreList(TbuserDto.MoreListServDto param){
         param.init();
-        logger.info(param.getCursor());
-        return addListDetails(tbuserMapper.moreList(param));
+        return addListDetails(tbuserMapper.moreList(param), CommonDto.DetailServDto.builder().reqTbuserId(param.getReqTbuserId()).isAdmin(param.isAdmin()).build());
     }
 
-    public CommonDto.PagedListResDto<TbuserDto.SelectResDto> pagedlist(TbuserDto.PagedListReqDto param){
+    public CommonDto.PagedListResDto<TbuserDto.SelectResDto> pagedlist(TbuserDto.PagedListServDto param){
         CommonDto.PagedListResDto<TbuserDto.SelectResDto> returnDto = new CommonDto.PagedListResDto<>();
         TbuserDto.PagedListServDto newParam = new TbuserDto.PagedListServDto();
         newParam.init(tbuserMapper.pagedListCount(param), param);
-        return returnDto.init(addListDetails(tbuserMapper.pagedList(newParam)), newParam);
+        return returnDto.init(addListDetails(tbuserMapper.pagedList(newParam), CommonDto.DetailServDto.builder().reqTbuserId(param.getReqTbuserId()).isAdmin(param.isAdmin()).build()), newParam);
     }
 
-    public List<TbuserDto.SelectResDto> addListDetails(List<TbuserDto.SelectResDto> a_list){
+    public List<TbuserDto.SelectResDto> addListDetails(List<TbuserDto.SelectResDto> a_list, CommonDto.DetailServDto detailServDto){
         List<TbuserDto.SelectResDto> result_list = new ArrayList<>();
         for(TbuserDto.SelectResDto each : a_list){
-            result_list.add(detail(CommonDto.SelectReqDto.builder().id(each.getId()).build()));
+            result_list.add(detail(CommonDto.SelectServDto.builder().id(each.getId()).reqTbuserId(detailServDto.getReqTbuserId()).isAdmin(detailServDto.isAdmin()).build()));
         }
         return result_list;
     }

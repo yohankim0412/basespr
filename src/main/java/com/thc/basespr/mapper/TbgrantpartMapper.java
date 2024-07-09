@@ -9,7 +9,7 @@ public interface TbgrantpartMapper {
 	TbgrantpartDto.SelectResDto detail(String id);
 	List<TbgrantpartDto.SelectResDto> list(TbgrantpartDto.ListReqDto param);
 
-	List<TbgrantpartDto.SelectResDto> moreList(TbgrantpartDto.MoreListReqDto param);
+	List<TbgrantpartDto.SelectResDto> moreList(TbgrantpartDto.MoreListServDto param);
 	List<TbgrantpartDto.SelectResDto> pagedList(TbgrantpartDto.PagedListServDto param);
 	int pagedListCount(TbgrantpartDto.PagedListServDto param);
 }
