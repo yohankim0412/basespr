@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <head th:replace="~{@{includes/user/head}}"></head>
+</head>
+<body>
+
+<script id="list_info_tbfaq" type="text/x-handlebars-template">
+    {{#resultData_tbfaq}}
+    <li>
+        <div class="fold js-fold">
+            <div class="tit">{{title}}</div>
+            <img src="/resources/frontuser/img/ico_arrow_bottom1.svg" alt=" " class="ico-arrow">
+        </div>
+        <div class="unfold js-unfold">
+            <div class="txt">{{content}}</div>
+        </div>
+    </li>
+    {{/resultData_tbfaq}}
+</script>
+<script type="text/javascript">
+    var list_info_tbfaq = $("#list_info_tbfaq").html();
+    var list_info_tbfaq_template = Handlebars.compile(list_info_tbfaq);
+</script>
+
+<div id="wrap">
+    <header class="header">
+        <div class="hd">
+            <div class="hd-tit">고객센터</div>
+            <button type="button" class="hd-back" onclick="location.href='javascript:history.back(-1);'"></button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="faq">
+            <div class="search-group">
+                <div class="inp-group-search">
+                    <input type="hidden" id="search_cate" />
+                    <input type="text" placeholder="궁금한 점이 있으시다면 여기서 검색해주세요." class="inp-search" id="search_title" onchange="search_tbfaq()" />
+                    <button type="button" class="btn-search" onclick="search_tbfaq()"></button>
+                </div>
+            </div>
+
+            <ol class="list-category-faq">
+                <li>
+                    <div class="ck-group">
+                        <input id="ck1" type="checkbox" name="ck" class="ck-custom2" keyword="0010" onchange="listener_faq_check(this)">
+                        <label for="ck1">이용문의</label>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="ck-group">
+                        <input id="ck2" type="checkbox" name="ck" class="ck-custom2" keyword="0020" onchange="listener_faq_check(this)">
+                        <label for="ck2">게임하기</label>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="ck-group">
+                        <input id="ck3" type="checkbox" name="ck" class="ck-custom2" keyword="0030" onchange="listener_faq_check(this)">
+                        <label for="ck3">게임하기</label>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="ck-group">
+                        <input id="ck4" type="checkbox" name="ck" class="ck-custom2" keyword="0040" onchange="listener_faq_check(this)">
+                        <label for="ck4">포인트</label>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="ck-group">
+                        <input id="ck5" type="checkbox" name="ck" class="ck-custom2" keyword="0050" onchange="listener_faq_check(this)">
+                        <label for="ck5">커뮤니티</label>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="ck-group">
+                        <input id="ck6" type="checkbox" name="ck" class="ck-custom2" keyword="0060" onchange="listener_faq_check(this)">
+                        <label for="ck6">회원코드</label>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="ck-group">
+                        <input id="ck7" type="checkbox" name="ck" class="ck-custom2" keyword="0070" onchange="listener_faq_check(this)">
+                        <label for="ck7">내 정보</label>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="ck-group">
+                        <input id="ck8" type="checkbox" name="ck" class="ck-custom2" keyword="0080" onchange="listener_faq_check(this)">
+                        <label for="ck8">기타</label>
+                    </div>
+                </li>
+            </ol>
+            <script>
+                function listener_faq_check(obj){
+                    $("#search_cate").val("");
+                    let input_obj_checked = $(obj).prop("checked");
+                    if(input_obj_checked){
+                        $("#search_cate").val($(obj).attr("keyword") + "");
+                    }
+                    let check_faq = $(".ck-custom2");
+                    for(let i=0;i<check_faq.length;i++){
+                        $(check_faq[i]).prop("checked", false);
+                    }
+                    if(input_obj_checked){
+                        $(obj).prop("checked", true);
+                    }
+                    search_tbfaq();
+                    //return false;
+                }
+            </script>
+
+            <div class="section">
+                <div class="top-section">
+                    <div class="tit">자주 묻는 질문</div>
+                </div>
+                <input type="hidden" id="input_keyword_changed" value="0" />
+                <ol class="list-faq" id="tbody_tbfaq_list">
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<body th:replace="~{@{includes/user/bottom}}"></body>
+<script>
+    $( document ).ready(function() {
+        console.log( "ready!" );
+        search_tbfaq();
+    });
+    function search_tbfaq(){
+        let params = {
+            'deleted' : 'N'
+
+            ,'cate' : $("#search_cate").val()
+            ,'title' : $("#search_title").val()
+        };
+        let _data = {};
+        _data.url = "/api/tbfaq/list";
+        _data.type = "GET";
+        _data.param = params;
+        _data.success = function(obj_data, obj_status, obj_xhr){
+            //alert(JSON.stringify(obj_data));
+            $("#tbody_tbfaq_list").html("");
+            let each_list = obj_data;
+            if(each_list.length == 0){
+                //alert("no Data");
+            }
+            $("#tbody_tbfaq_list").append(list_info_tbfaq_template({"resultData_tbfaq":each_list}));
+            listenerAfterList();
+
+            //아코디언
+            resetAcodian();
+        }
+        _data.error = function(obj_data, obj_status, obj_xhr){
+            alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+        }
+        func_ajax(_data);
+    }
+</script>
+</body>
+</html>

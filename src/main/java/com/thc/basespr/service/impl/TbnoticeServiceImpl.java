@@ -56,13 +56,13 @@ public class TbnoticeServiceImpl implements TbnoticeService {
         return tbnoticeRepository.save(tbnotice).toCreateResDto();
     }
     public TbnoticeDto.CreateResDto delete(CommonDto.DeleteServDto param){
-        TbnoticeDto.UpdateServDto newParam = TbnoticeDto.UpdateServDto.builder().id(param.getId()).deleted("Y").build();
+        TbnoticeDto.UpdateServDto newParam = TbnoticeDto.UpdateServDto.builder().id(param.getId()).deleted("Y").isAdmin(param.isAdmin()).reqTbuserId(param.getReqTbuserId()).build();
         return update(newParam);
     }
     public TbnoticeDto.CreateResDto deletes(CommonDto.DeletesServDto param){
         int count = 0;
         for(String each : param.getIds()){
-            TbnoticeDto.UpdateServDto newParam = TbnoticeDto.UpdateServDto.builder().id(each).deleted("Y").build();
+            TbnoticeDto.UpdateServDto newParam = TbnoticeDto.UpdateServDto.builder().id(each).deleted("Y").isAdmin(param.isAdmin()).reqTbuserId(param.getReqTbuserId()).build();
             TbnoticeDto.CreateResDto result = update(newParam);
             if(!(result.getId()).isEmpty()) {
                 count++;

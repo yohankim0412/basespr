@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thc.basespr.mapper.TbqnaMapper">
+
+	<!---->
+	<select id="detail" parameterType="hashMap" resultType="com.thc.basespr.dto.TbqnaDto$SelectResDto">
+		SELECT tbqna.id
+			,tbqna.deleted
+			,tbqna.process
+			,tbqna.created_at as createdAt
+			,tbqna.modified_at as modifiedAt
+			,tbqna.tbuser_id as tbuserId
+
+			,tbuser.deleted as tbuserDeleted
+			,tbuser.code as tbuserCode
+			,tbuser.nick as tbuserNick
+			,tbuser.name as tbuserName
+			,tbuser.phone as tbuserPhone
+			,tbuser.img as tbuserImg
+
+			,tbqna.title
+			,tbqna.content
+			,tbqna.answer
+		FROM tbqna, tbuser
+		WHERE tbqna.id = #{id}
+		  AND tbqna.tbuser_id = tbuser.id
+	</select>
+	<select id="list" parameterType="hashMap" resultType="com.thc.basespr.dto.TbqnaDto$SelectResDto">
+		SELECT tbqna.id
+		FROM tbqna
+		WHERE tbqna.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbqna.deleted = #{deleted}</if>
+		<if test = "sdate != null and sdate !=''">AND tbqna.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbqna.created_at</if>
+		<if test = "tbuserId != null and tbuserId !=''">AND tbqna.tbuser_id = #{tbuserId}</if>
+		<if test = "process != null and process !=''">AND tbqna.process = #{process}</if>
+		<if test = "title != null and title !=''">AND tbqna.title LIKE CONCAT('%', #{title}, '%')</if>
+		ORDER BY tbqna.created_at DESC;
+	</select>
+
+	<select id="moreList" parameterType="hashMap" resultType="com.thc.basespr.dto.TbqnaDto$SelectResDto">
+		SELECT tbqna.id
+		FROM tbqna
+		WHERE tbqna.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbqna.deleted = #{deleted}</if>
+		<if test = "sdate != null and sdate !=''">AND tbqna.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbqna.created_at</if>
+		<if test = "tbuserId != null and tbuserId !=''">AND tbqna.tbuser_id = #{tbuserId}</if>
+		<if test = "process != null and process !=''">AND tbqna.process = #{process}</if>
+		<if test = "title != null and title !=''">AND tbqna.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "orderby =='created_at'">
+			<if test = "orderway =='desc'">
+				AND STR_TO_DATE(#{cursor}, '%Y-%m-%d %H:%i:%s.%f') > tbqna.created_at ORDER BY tbqna.created_at DESC
+			</if>
+			<if test = "orderway =='asc'">
+				AND tbqna.created_at > STR_TO_DATE(#{cursor}, '%Y-%m-%d %H:%i:%s.%f') ORDER BY tbqna.created_at ASC
+			</if>
+		</if>
+		<if test = "orderby =='title'">
+			<if test = "orderway =='desc'">
+				AND #{cursor} > tbqna.title ORDER BY tbqna.created_at DESC
+			</if>
+			<if test = "orderway =='asc'">
+				AND tbqna.title > #{cursor} ORDER BY tbqna.created_at ASC
+			</if>
+		</if>
+		LIMIT 0, #{perpage}
+	</select>
+	<select id="pagedList" parameterType="hashMap" resultType="com.thc.basespr.dto.TbqnaDto$SelectResDto">
+		SELECT tbqna.id
+		FROM tbqna
+		WHERE tbqna.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbqna.deleted = #{deleted}</if>
+		<if test = "sdate != null and sdate !=''">AND tbqna.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbqna.created_at</if>
+		<if test = "tbuserId != null and tbuserId !=''">AND tbqna.tbuser_id = #{tbuserId}</if>
+		<if test = "process != null and process !=''">AND tbqna.process = #{process}</if>
+		<if test = "title != null and title !=''">AND tbqna.title LIKE CONCAT('%', #{title}, '%')</if>
+		<if test = "orderby =='created_at'">ORDER BY tbqna.created_at </if>
+		<if test = "orderby =='title'">ORDER BY tbqna.title </if>
+		<if test = "orderway =='asc'">ASC</if>
+		<if test = "orderway =='desc'">DESC</if>
+		LIMIT #{offset}, #{perpage}
+	</select>
+	<select id="pagedListCount" parameterType="hashMap" resultType="Integer">
+		SELECT count(tbqna.id) as listsize
+		FROM tbqna
+		WHERE tbqna.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbqna.deleted = #{deleted}</if>
+		<if test = "sdate != null and sdate !=''">AND tbqna.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbqna.created_at</if>
+		<if test = "tbuserId != null and tbuserId !=''">AND tbqna.tbuser_id = #{tbuserId}</if>
+		<if test = "process != null and process !=''">AND tbqna.process = #{process}</if>
+		<if test = "title != null and title !=''">AND tbqna.title LIKE CONCAT('%', #{title}, '%')</if>
+	</select>
+
+</mapper>

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 //2024-07-08 추가(클래스 처음 추가함)
-@Tag(name = "2-1. FAQ API 안내",
+@Tag(name = "2-2. FAQ API 안내",
         description = "FAQ 관련 기능 정의한 RestController.")
 @RequestMapping("/api/tbfaq")
 @RestController
@@ -128,7 +128,7 @@ public class TbfaqRestController {
                     + "@return HttpStatus.OK(200) ResponseEntity\\<List<TbfaqDto.SelectResDto>\\> <br />"
                     + "@exception - <br />"
     )
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("permitAll()")
     @GetMapping("/list")
     public ResponseEntity<List<TbfaqDto.SelectResDto>> list(@Valid TbfaqDto.ListReqDto param, @AuthenticationPrincipal PrincipalDetails principalDetails){
         boolean isAdmin = tbgrantService.access(new TbgrantDto.AccessReqDto("tbfaq", "read", principalDetails.getTbuser().getId()));

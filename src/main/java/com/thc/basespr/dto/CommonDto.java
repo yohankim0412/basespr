@@ -122,10 +122,15 @@ public class CommonDto {
 		private String id;
 		@Schema(description = "deleted", example="")
 		private String deleted;
+		@Schema(description = "process", example="")
+		private String process;
 		@Schema(description = "createdAt", example="")
 		private String createdAt;
 		@Schema(description = "modifiedAt", example="")
 		private String modifiedAt;
+
+		@Schema(description = "createdAtOnlyDate", example="")
+		private String createdAtOnlyDate;
 	}
 
 	@SuperBuilder

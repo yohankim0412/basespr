@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <head th:replace="~{@{includes/user/head}}"></head>
+</head>
+<body>
+
+<script id="list_info_tbqna" type="text/x-handlebars-template">
+    {{#resultData_tbqna}}
+    <li>
+        <div class="fold js-fold">
+            <div class="tit">{{title}}</div>
+            <div class="txt">{{createdAtOnlyDate}}</div>
+            <img src="/resources/frontuser/img/ico_arrow_bottom1.svg" alt=" " class="ico-arrow">
+        </div>
+
+        <div class="unfold js-unfold">
+            <div class="txt">{{content}}</div>
+        </div>
+    </li>
+    {{/resultData_tbqna}}
+</script>
+<script type="text/javascript">
+    var list_info_tbqna = $("#list_info_tbqna").html();
+    var list_info_tbqna_template = Handlebars.compile(list_info_tbqna);
+</script>
+
+<div id="wrap">
+    <header class="header">
+        <div class="hd">
+            <div class="hd-tit">1:1 문의하기</div>
+            <button type="button" class="hd-back" onclick="location.href='javascript:history.back(-1);'"></button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="inquiry">
+            <div class="board-tool">
+                <div class="tit">내 질문</div>
+                <a href="/tbqna/create" class="btn">1:1 문의하기</a>
+            </div>
+
+            <div class="hide">
+                <input type="hidden" id="input_keyword_changed" value="0" />
+                <input type="hidden" id="search_sdatetime" value="" />
+                <input type="hidden" id="search_fdatetime" value="" />
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">삭제여부</label>
+                    <div class="col-sm-4">
+                        <select class="select_search_keyword form-control m-b" keyword="deleted" id="search_deleted" onchange="listener_keyword_changed()">
+                            <option value="">전체</option>
+                            <option value="N" selected="selected">일반</option>
+                            <option value="Y">삭제</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-2 col-form-label">진행단계</label>
+                    <div class="col-sm-4">
+                        <select class="select_search_keyword form-control m-b" keyword="process" id="search_process" onchange="listener_keyword_changed()">
+                            <option value="" selected="selected">전체</option>
+                            <option value="yet">접수</option>
+                            <option value="ing">보류</option>
+                            <option value="done">답변완료</option>
+                            <option value="not">거절</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-2 col-form-label">등록 시기</label>
+                    <div class="col-sm-3">
+                        <input class="form-control" id="search_sdate" type="date" onchange="listener_keyword_changed()"/>
+                    </div>
+                    <div class="col-sm-3">
+                        <input class="form-control" id="search_fdate" type="date" onchange="listener_keyword_changed()"/>
+                    </div>
+                    <div class="col-sm-4">
+                        <button class="btn btn-default btn-sm" onclick="set_search_sdatefdate('null'); return false;">초기화</button>
+                        <button class="btn btn-default btn-sm" onclick="set_search_sdatefdate('today'); return false;">오늘</button>
+                        <button class="btn btn-default btn-sm" onclick="set_search_sdatefdate('week'); return false;">1주</button>
+                        <button class="btn btn-default btn-sm" onclick="set_search_sdatefdate('month'); return false;">1개월</button>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">키워드</label>
+                    <div class="col-sm-4">
+                        <select class="form-control m-b" id="search_keyword" onchange="set_search_keyword()">
+                            <option value="10" selected="selected">제목</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <input id="search_title" onchange="listener_keyword_changed();"
+                               class="form-control search_keyword_each search_keyword_each_10" type="text" placeholder="내용을 입력하세요"/>
+                    </div>
+
+                    <input type="hidden" id="cursor" />
+                    <label class="col-sm-2 col-form-label">검색 기준</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="orderby" onchange="listener_keyword_changed();">
+                            <option value="created_at" selected="selected">등록순</option>
+                            <option value="title">가나다순</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-2 col-form-label">한번에 불러올 갯수</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="perpage" onchange="listener_keyword_changed();">
+                            <option value="10" selected="selected">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-2 col-form-label">조회방향</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="orderway" onchange="listener_keyword_changed();">
+                            <option value="desc" selected="selected">역방향</option>
+                            <option value="asc">정방향</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <ol class="list-inquiry" id="tbody_tbqna_list">
+            </ol>
+        </div>
+    </div>
+</div>
+
+<body th:replace="~{@{includes/user/bottom}}"></body>
+
+<script>
+    $( document ).ready(function() {
+        console.log( "ready!" );
+        search_tbqna();
+    });
+</script>
+
+<script>
+    function listener_keyword_changed(){
+        $("#input_keyword_changed").val("1");
+    }
+
+    function search_tbqna(){
+        let cursor = $("#cursor").val();
+        let orderway = $("#orderway").val();
+        let orderby = $("#orderby").val();
+        let input_cursor = null;
+        if(orderway == "desc"){
+            if(orderby == "created_at"){
+                input_cursor = $(".input_cursor_createdAt");
+            } else if(orderby == "title"){
+                input_cursor = $(".input_cursor_title");
+            }
+            if(input_cursor.length > 0){
+                cursor = $(input_cursor[0]).val();
+                for(let i=0;i<input_cursor.length;i++){
+                    if(cursor > $(input_cursor[i]).val()){
+                        cursor = $(input_cursor[i]).val();
+                    }
+                }
+            }
+        } else {
+            if(orderby == "created_at"){
+                input_cursor = $(".input_cursor_createdAt");
+            } else if(orderby == "title"){
+                input_cursor = $(".input_cursor_title");
+            }
+            if(input_cursor.length > 0){
+                cursor = $(input_cursor[0]).val();
+                for(let i=0;i<input_cursor.length;i++){
+                    if(cursor < $(input_cursor[i]).val()){
+                        cursor = $(input_cursor[i]).val();
+                    }
+                }
+            }
+        }
+        $("#cursor").val(cursor);
+        //alert(cursor);
+        //return false;
+        if($("#input_keyword_changed").val() + "" === "1"){
+            $("#cursor").val("");
+        }
+
+        let params = {
+            'deleted' : $("#search_deleted").val()
+            ,'perpage' : $("#perpage").val()
+            ,'cursor' : $("#cursor").val()
+            ,'orderby' : $("#orderby").val()
+            ,'orderway' : $("#orderway").val()
+            ,'sdate' : $("#search_sdate").val()
+            ,'fdate' : $("#search_fdate").val()
+
+            ,'tbuserId' : "my"
+            ,'title' : $("#search_title").val()
+        };
+        let _data = {};
+        _data.url = "/api/tbqna/mlist";
+        _data.type = "GET";
+        _data.param = params;
+        _data.success = function(obj_data, obj_status, obj_xhr){
+            //alert(JSON.stringify(obj_data));
+            let each_list = obj_data;
+            if($("#input_keyword_changed").val() + "" === "1"){
+                $("#tbody_tbqna_list").html("");
+                $("#input_keyword_changed").val("");
+            }
+            if(each_list.length == 0){
+                alert("no Data");
+            }
+
+            if($("#orderway").val() == "desc"){
+                $("#tbody_tbqna_list").append(list_info_tbqna_template({"resultData_tbqna":each_list}));
+            } else {
+                //each_list
+                each_list.reverse();
+                $("#tbody_tbqna_list").prepend(list_info_tbqna_template({"resultData_tbqna":each_list}));
+            }
+
+            let detailKeys = Object.keys(obj_data);
+            for (let eachKey of detailKeys){
+                //alert(eachKey);
+                $(".font_" + eachKey).text(obj_data[eachKey]);
+            }
+            listenerAfterList();
+
+            //아코디언
+            resetAcodian();
+        }
+        _data.error = function(obj_data, obj_status, obj_xhr){
+            alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+        }
+        func_ajax(_data);
+    }
+</script>
+
+</body>
+</html>

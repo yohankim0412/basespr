@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <head th:replace="~{@{includes/admin/head}}"></head>
+</head>
+<body>
+
+<script id="list_info_tbqnafile" type="text/x-handlebars-template">
+    {{#resultData_tbqnafile}}
+    <div class="col-sm-2" style="text-align: center" id="div_tbqnafile_{{id}}">
+        <input type="hidden" class="input_tbqnafile_id" value="{{id}}"/>
+        <input type="hidden" class="input_tbqnafile_cate" value="{{cate}}"/>
+        <input type="hidden" class="input_tbqnafile_url" value="{{url}}"/>
+        <img class="img-fluid" style="height:100px;" src="{{url}}"/>
+        <div style="text-align: right" onclick="delete_tbqnafile('{{id}}')">삭제</div>
+    </div>
+    {{/resultData_tbqnafile}}
+</script>
+<script type="text/javascript">
+    var list_info_tbqnafile = $("#list_info_tbqnafile").html();
+    var list_info_tbqnafile_template = Handlebars.compile(list_info_tbqnafile);
+</script>
+
+<div id="wrapper">
+    <body th:replace="~{@{includes/admin/nav}}"></body>
+    <script>
+        $(".sidemenu_li_tbqna").addClass("active");
+    </script>
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <body th:replace="~{@{includes/admin/navbar_top}}"></body>
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2>1:1문의 상세 : <font class="font_tbqna_title"></font></h2>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/admin">Home</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/tbnotice/admin_list">글 모음</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/tbqna/admin_list">1:1문의 목록</a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        <strong>1:1문의 상세</strong>
+                    </li>
+                </ol>
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+
+        <div class="animated fadeInRight" style="padding-top:12.5px;padding-bottom:0px;">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox-title">
+                        <h5>#<font class="font_tbqna_id">-</font></h5>
+                    </div>
+                    <div class="ibox-content" style="padding-bottom:0.1px;">
+                        <input type="hidden" id="detail_tbqna_id" value="" />
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">삭제여부</label>
+                            <div class="col-sm-4">
+                                <select class="form-control m-b" id="detail_tbqna_deleted" keyword="deleted" onchange="update_tbqna(this)">
+                                    <option value="N">일반</option>
+                                    <option value="Y">삭제</option>
+                                </select>
+                            </div>
+                            <label class="col-sm-2 col-form-label">구분</label>
+                            <div class="col-sm-4">
+                                <select class="form-control m-b" id="detail_tbqna_process" keyword="process" onchange="update_tbqna(this)">
+                                    <option value="yet">접수</option>
+                                    <option value="ing">보류</option>
+                                    <option value="done">답변완료</option>
+                                    <option value="not">거절</option>
+                                </select>
+                            </div>
+
+                            <label class="col-sm-2 col-form-label">*제목</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control m-b" id="detail_tbqna_title" keyword="title" placeholder="내용을 입력하세요" onchange="update_tbqna(this)" />
+                            </div>
+
+                            <label class="col-sm-6"></label>
+                            <label class="col-sm-2 col-form-label">내용</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control m-b" id="detail_tbqna_content" keyword="content" onkeyup="listener_maxlength_check(this, 2000);" onchange="update_tbqna(this)" rows="4" placeholder="내용을 입력하세요"></textarea>
+                            </div>
+
+                            <label class="col-sm-2 col-form-label">답변</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control m-b" id="detail_tbqna_answer" keyword="answer" onkeyup="listener_maxlength_check(this, 2000);" onchange="update_tbqna(this)" rows="4" placeholder="내용을 입력하세요"></textarea>
+                            </div>
+
+                            <label class="col-sm-2"></label>
+                            <div class="col-sm-10">
+                                <div class="row m-b" id="div_array_files">
+                                </div>
+                                <script>
+                                    function delete_tbqnafile(id){
+                                        let _param = {
+                                            'id' : id
+                                        };
+                                        let _data = new Map();
+                                        _data.url = "/api/tbqnafile";
+                                        _data.type = "DELETE";
+                                        _data.param = _param;
+                                        _data.success = function(obj_data, obj_status, obj_xhr){
+                                            $("#div_tbqnafile_" + id).remove();
+                                        }
+                                        _data.error = function(obj_data, obj_status, obj_xhr){
+                                            alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+                                        }
+                                        func_ajax(_data);
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                        <div class="m-b" style="text-align: right;">
+                            <button class="btn btn-primary btn-sm" onclick="update_tbfaq_process('done')">완료처리</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $( document ).ready(function() {
+                console.log( "ready!" );
+                detail_tbqna();
+            });
+
+            function detail_tbqna(){
+                let tbqnaId = getIdFromUrl(null);
+                let _data = new Map();
+                _data.url = "/api/tbqna";
+                _data.type = "GET";
+                _data.param = {'id':tbqnaId};
+                _data.success = function(obj_data, obj_status, obj_xhr){
+                    //alert(JSON.stringify(obj_data));
+                    let detailKeys = Object.keys(obj_data)
+                    for (let eachKey of detailKeys){
+                        $(".font_tbqna_" + eachKey).text(obj_data[eachKey]);
+                        $("#detail_tbqna_" + eachKey).val(obj_data[eachKey]);
+                        $("#img_tbqna_" + eachKey).attr("src", obj_data[eachKey]);
+                    }
+                    let files = obj_data.files;
+                    for(each of files){
+                        //alert(each["deleted"] + "");
+                        /*if(each["deleted"] + "" === "N"){
+                        }*/
+                        let each_list = [];
+                        each_list.push(each);
+                        $("#div_array_files").append(list_info_tbqnafile_template({"resultData_tbqnafile": each_list}));
+                    }
+                }
+                _data.error = function(obj_data, obj_status, obj_xhr){
+                    alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+                }
+                func_ajax(_data);
+            }
+            function update_tbqna(obj){
+                let _param = {};
+                _param["id"] = $("#detail_tbqna_id").val();
+                _param[$(obj).attr("keyword")] = $(obj).val();
+                //alert(_param[$(obj).attr("keyword")]);
+
+                let _data = new Map();
+                _data.url = "/api/tbqna";
+                _data.type = "PUT";
+                _data.param = _param;
+                _data.success = function(obj_data, obj_status, obj_xhr){
+                    //alert("수정되었습니다.");
+                }
+                _data.error = function(obj_data, obj_status, obj_xhr){
+                    alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+                }
+                func_ajax(_data);
+            }
+            function update_tbfaq_process(obj_process){
+                let _param = {};
+                _param["id"] = $("#detail_tbqna_id").val();
+                _param["process"] = obj_process;
+                let _data = new Map();
+                _data.url = "/api/tbqna";
+                _data.type = "PUT";
+                _data.param = _param;
+                _data.success = function(obj_data, obj_status, obj_xhr){
+                    $("#detail_tbqna_process").val("done");
+                    alert("완료 되었습니다.");
+                }
+                _data.error = function(obj_data, obj_status, obj_xhr){
+                    alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+                }
+                func_ajax(_data);
+            }
+        </script>
+        <body th:replace="~{@{includes/admin/footer}}"></body>
+    </div>
+    <body th:replace="~{@{includes/admin/right_sidebar}}"></body>
+</div>
+<body th:replace="~{@{includes/admin/bottom}}"></body>
+</body>
+</html>

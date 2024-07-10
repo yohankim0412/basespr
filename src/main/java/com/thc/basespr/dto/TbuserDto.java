@@ -18,6 +18,32 @@ public class TbuserDto {
 	@Schema
 	@Getter
 	@Setter
+	public static class KgcertTokenReqDto {
+		private String userName;
+		private String userPhone;
+		private String userBirth;
+	}
+
+	@Builder
+	@Schema
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class KgcertTokenResDto {
+		private String mid;
+		private String apiKey;
+		private String reqSvcCd;
+		private String mTxId;
+		private String reservedMsg;
+		private String flgFixedUser;
+		private String authHash;
+		private String userHash;
+	}
+
+	@Schema
+	@Getter
+	@Setter
 	public static class LoginReqDto {
 		@Schema(description = "username", example="사용자 아이디")
 		@NotNull
@@ -57,8 +83,19 @@ public class TbuserDto {
 		@Size(max=12)
 		private String nick;
 
+		@Schema(description = "name", example="")
+		private String name;
+		@Schema(description = "phone", example="")
+		private String phone;
+		@Schema(description = "birth", example="")
+		private String birth;
+		@Schema(description = "gender", example="")
+		private String gender;
+		@Schema(description = "route", example="")
+		private String route;
+
 		public Tbuser toEntity() {
-			return Tbuser.of(username, password, code, nick);
+			return Tbuser.of(username, password, code, nick, name, phone, birth, gender, route);
 		}
 	}
 	@SuperBuilder

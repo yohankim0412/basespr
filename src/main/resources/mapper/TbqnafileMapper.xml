@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thc.basespr.mapper.TbqnafileMapper">
+
+	<!---->
+	<select id="detail" parameterType="hashMap" resultType="com.thc.basespr.dto.TbqnafileDto$SelectResDto">
+		SELECT tbqnafile.id
+			,tbqnafile.deleted
+			,tbqnafile.process
+			,tbqnafile.created_at as createdAt
+			,tbqnafile.modified_at as modifiedAt
+			,tbqnafile.tbqna_id as tbqnaId
+			,tbqnafile.cate
+			,tbqnafile.url
+		FROM tbqnafile
+		WHERE tbqnafile.id = #{id}
+	</select>
+	<select id="list" parameterType="hashMap" resultType="com.thc.basespr.dto.TbqnafileDto$SelectResDto">
+		SELECT tbqnafile.id
+		FROM tbqnafile
+		WHERE tbqnafile.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbqnafile.deleted = #{deleted}</if>
+		<if test = "sdate != null and sdate !=''">AND tbqnafile.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbqnafile.created_at</if>
+		<if test = "tbqnaId != null and tbqnaId !=''">AND tbqnafile.tbqna_id = #{tbqnaId}</if>
+		<if test = "cate != null and cate !=''">AND tbqnafile.cate = #{cate}</if>
+		ORDER BY tbqnafile.created_at DESC;
+	</select>
+
+	<select id="moreList" parameterType="hashMap" resultType="com.thc.basespr.dto.TbqnafileDto$SelectResDto">
+		SELECT tbqnafile.id
+		FROM tbqnafile
+		WHERE tbqnafile.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbqnafile.deleted = #{deleted}</if>
+		<if test = "sdate != null and sdate !=''">AND tbqnafile.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbqnafile.created_at</if>
+		<if test = "tbqnaId != null and tbqnaId !=''">AND tbqnafile.tbqna_id = #{tbqnaId}</if>
+		<if test = "cate != null and cate !=''">AND tbqnafile.cate = #{cate}</if>
+		<if test = "orderby =='created_at'">
+			<if test = "orderway =='desc'">
+				AND STR_TO_DATE(#{cursor}, '%Y-%m-%d %H:%i:%s.%f') > tbqnafile.created_at ORDER BY tbqnafile.created_at DESC
+			</if>
+			<if test = "orderway =='asc'">
+				AND tbqnafile.created_at > STR_TO_DATE(#{cursor}, '%Y-%m-%d %H:%i:%s.%f') ORDER BY tbqnafile.created_at ASC
+			</if>
+		</if>
+		<if test = "orderby =='title'">
+			<if test = "orderway =='desc'">
+				AND #{cursor} > tbqnafile.title ORDER BY tbqnafile.created_at DESC
+			</if>
+			<if test = "orderway =='asc'">
+				AND tbqnafile.title > #{cursor} ORDER BY tbqnafile.created_at ASC
+			</if>
+		</if>
+		LIMIT 0, #{perpage}
+	</select>
+	<select id="pagedList" parameterType="hashMap" resultType="com.thc.basespr.dto.TbqnafileDto$SelectResDto">
+		SELECT tbqnafile.id
+		FROM tbqnafile
+		WHERE tbqnafile.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbqnafile.deleted = #{deleted}</if>
+		<if test = "sdate != null and sdate !=''">AND tbqnafile.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbqnafile.created_at</if>
+		<if test = "tbqnaId != null and tbqnaId !=''">AND tbqnafile.tbqna_id = #{tbqnaId}</if>
+		<if test = "cate != null and cate !=''">AND tbqnafile.cate = #{cate}</if>
+		<if test = "orderby =='created_at'">ORDER BY tbqnafile.created_at </if>
+		<if test = "orderby =='title'">ORDER BY tbqnafile.title </if>
+		<if test = "orderway =='asc'">ASC</if>
+		<if test = "orderway =='desc'">DESC</if>
+		LIMIT #{offset}, #{perpage}
+	</select>
+	<select id="pagedListCount" parameterType="hashMap" resultType="Integer">
+		SELECT count(tbqnafile.id) as listsize
+		FROM tbqnafile
+		WHERE tbqnafile.id is not NULL
+		<if test = "deleted != null and deleted !=''">AND tbqnafile.deleted = #{deleted}</if>
+		<if test = "sdate != null and sdate !=''">AND tbqnafile.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= tbqnafile.created_at</if>
+		<if test = "tbqnaId != null and tbqnaId !=''">AND tbqnafile.tbqna_id = #{tbqnaId}</if>
+		<if test = "cate != null and cate !=''">AND tbqnafile.cate = #{cate}</if>
+	</select>
+
+</mapper>

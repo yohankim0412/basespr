@@ -4,6 +4,7 @@ import com.thc.basespr.domain.Tbgrant;
 import com.thc.basespr.dto.CommonDto;
 import com.thc.basespr.dto.TbgrantDto;
 import com.thc.basespr.dto.TbuserDto;
+import com.thc.basespr.security.JwtTokenDto;
 import com.thc.basespr.security.PrincipalDetails;
 import com.thc.basespr.service.TbgrantService;
 import com.thc.basespr.service.TbuserService;
@@ -39,6 +40,19 @@ public class TbuserRestController {
         this.tbgrantService = tbgrantService;
     }
 
+    @Operation(summary = "회원 가입(KG임시)",
+            description = "회원 가입(KG임시) 위한 컨트롤러 (누구나 접근 가능) <br />"
+                    + "@param TbuserDto.CreateReqDto <br />"
+                    + "@return HttpStatus.CREATED(201) ResponseEntity\\<TbuserDto.CreateResDto\\> <br />"
+                    + "@exception username 중복일 경우  <br />"
+    )
+    @PreAuthorize("permitAll()")
+    @PostMapping("/kg")
+    public ResponseEntity<JwtTokenDto> tempKgcert(@Valid @RequestBody TbuserDto.CreateReqDto param) {
+        boolean isAdmin = tbgrantService.access(new TbgrantDto.AccessReqDto("tbuser", "create", null));
+        TbuserDto.CreateServDto newParam = (TbuserDto.CreateServDto) TbuserDto.CreateServDto.builder().isAdmin(isAdmin).build().afterBuild(param);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tbuserService.tempKgcert(newParam));
+    }
     @Operation(summary = "회원 가입",
             description = "회원 가입 위한 컨트롤러 (누구나 접근 가능) <br />"
                     + "@param TbuserDto.CreateReqDto <br />"

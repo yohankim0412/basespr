@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <head th:replace="~{@{includes/user/head}}"></head>
+</head>
+<body>
+
+<div id="wrap">
+    <div class="container">
+        <div class="qr no-header">
+            <div class="top-banner" style="width:100%;aspect-ratio:786/140;">
+                <!--<img src="/resources/frontuser/img/banner/img_banner1.png" alt="">-->
+            </div>
+
+            <div class="inner">
+                <div class="top-page">
+                    <div class="tit">출입 QR코드</div>
+                    <div class="txt">매장을 이용하고자 하는 고객님은 <br>QR코드를 사용해주세요.</div>
+                </div>
+
+                <div class="qr-group inactive">
+                    <div class="qr-data">
+                        <div class="user-type">성인</div>
+                        <div class="expiration-date">사용기간:무제한</div>
+                    </div>
+
+                    <div class="qr-content">
+                        <div class="img-group">
+                            <img src="/resources/frontuser/img/tmp/img_qr1.png" alt=" ">
+                        </div>
+
+                        <div class="qr-reload">
+                            <div class="tit-group">
+                                <img src="/resources/frontuser/img/ico_clock1.svg" alt=" " class="ico">
+                                <div class="tit">QR코드 유효시간 초과</div>
+                                <div class="txt">해당 QR코드의 유효시간이 지났습니다. <br>다시 시도하시겠습니까?</div>
+                            </div>
+                            <button type="button" class="btn-reload" onclick="alert('준비중입니다.');">
+                                <img src="/resources/frontuser/img/ico_reload1.svg" alt=" ">재시도
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="qr-time">남은 요청 시간<span>00초</span></div>
+                <div class="qr-message hide">청소년은 22시 ~ 09시까지 매장 이용이 불가합니다.</div>
+            </div>
+        </div>
+    </div>
+    <body th:replace="~{@{includes/user/footer}}"></body>
+</div>
+
+<body th:replace="~{@{includes/user/bottom}}"></body>
+</body>
+</html>

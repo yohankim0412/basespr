@@ -10,8 +10,10 @@ import com.thc.basespr.mapper.TbuserMapper;
 import com.thc.basespr.repository.RoleTypeRepository;
 import com.thc.basespr.repository.TbuserRepository;
 import com.thc.basespr.repository.TbuserRoleTypeRepository;
+import com.thc.basespr.security.JwtTokenDto;
+import com.thc.basespr.service.AuthService;
 import com.thc.basespr.service.TbuserService;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.thc.basespr.util.ExternalProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,30 +34,67 @@ public class TbuserServiceImpl implements TbuserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final RoleTypeRepository roleTypeRepository;
     private final TbuserRoleTypeRepository tbuserRoleTypeRepository;
+    private final AuthService authService;
+    private final ExternalProperties externalProperties;
     public TbuserServiceImpl(
             TbuserRepository tbuserRepository
             ,TbuserMapper tbuserMapper
             ,BCryptPasswordEncoder bCryptPasswordEncoder
             ,RoleTypeRepository roleTypeRepository
             ,TbuserRoleTypeRepository tbuserRoleTypeRepository
+            ,AuthService authService
+            ,ExternalProperties externalProperties
     ) {
         this.tbuserRepository = tbuserRepository;
         this.tbuserMapper = tbuserMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.roleTypeRepository = roleTypeRepository;
         this.tbuserRoleTypeRepository = tbuserRoleTypeRepository;
+        this.authService = authService;
+        this.externalProperties = externalProperties;
+    }
+
+    public JwtTokenDto getToken(String id){
+        String refreshToken = authService.createRefreshToken(id);
+        JwtTokenDto jwtTokenDto = authService.issueAccessToken(refreshToken);
+        jwtTokenDto.setRefreshToken(externalProperties.getTokenPrefix() + jwtTokenDto.getRefreshToken());
+        jwtTokenDto.setAccessToken(externalProperties.getTokenPrefix() + jwtTokenDto.getAccessToken());
+        return jwtTokenDto;
+    }
+
+    public JwtTokenDto tempKgcert(TbuserDto.CreateServDto param){
+        TbuserDto.CreateResDto createResDto = null;
+        //01099998888_19781121_M_홍길동
+        String birth = param.getBirth();
+        birth = birth.replaceAll("-","");
+        String phone = param.getPhone();
+        phone = phone.replaceAll("-","");
+        String tempUsername = phone + "_" + birth + "_" + param.getGender() + "_" + param.getName();
+        param.setUsername(tempUsername);
+        param.setPassword(tempUsername);
+
+        Tbuser tbuser = tbuserRepository.findByUsername(param.getUsername());
+        if(tbuser == null){
+            param.setRoute("KGCERT");
+            createResDto = create(param);
+        } else {
+            createResDto = TbuserDto.CreateResDto.builder().id(tbuser.getId()).build();
+        }
+        return getToken(createResDto.getId());
     }
 
     public TbuserDto.CreateResDto signup(TbuserDto.CreateServDto param){
-        //닉네임은 그냥 자동 생성..
-        String code = UUID.randomUUID().toString().replace("-", "").substring(0,12);
-        param.setCode(code);
-        param.setNick(code);
+        param.setRoute("direct");
         return create(param);
     }
 
     /**/
     public TbuserDto.CreateResDto create(TbuserDto.CreateServDto param){
+
+        //닉네임은 그냥 자동 생성..
+        String code = UUID.randomUUID().toString().replace("-", "").substring(0,12);
+        param.setCode(code);
+        param.setNick(code);
 
         //비번 암호화를 위한 코드
         String rawPassword = param.getPassword();
@@ -95,13 +134,13 @@ public class TbuserServiceImpl implements TbuserService {
         return tbuserRepository.save(tbuser).toCreateResDto();
     }
     public TbuserDto.CreateResDto delete(CommonDto.DeleteServDto param){
-        TbuserDto.UpdateServDto newParam = TbuserDto.UpdateServDto.builder().id(param.getId()).deleted("Y").build();
+        TbuserDto.UpdateServDto newParam = TbuserDto.UpdateServDto.builder().id(param.getId()).deleted("Y").isAdmin(param.isAdmin()).reqTbuserId(param.getReqTbuserId()).build();
         return update(newParam);
     }
     public TbuserDto.CreateResDto deletes(CommonDto.DeletesServDto param){
         int count = 0;
         for(String each : param.getIds()){
-            TbuserDto.UpdateServDto newParam = TbuserDto.UpdateServDto.builder().id(each).deleted("Y").build();
+            TbuserDto.UpdateServDto newParam = TbuserDto.UpdateServDto.builder().id(each).deleted("Y").isAdmin(param.isAdmin()).reqTbuserId(param.getReqTbuserId()).build();
             TbuserDto.CreateResDto result = update(newParam);
             if(!(result.getId()).isEmpty()) {
                 count++;

@@ -92,13 +92,13 @@ public class TbfaqServiceImpl implements TbfaqService {
         return tbfaqRepository.save(tbfaq).toCreateResDto();
     }
     public TbfaqDto.CreateResDto delete(CommonDto.DeleteServDto param){
-        TbfaqDto.UpdateServDto newParam = TbfaqDto.UpdateServDto.builder().id(param.getId()).deleted("Y").build();
+        TbfaqDto.UpdateServDto newParam = TbfaqDto.UpdateServDto.builder().id(param.getId()).deleted("Y").isAdmin(param.isAdmin()).build();
         return update(newParam);
     }
     public TbfaqDto.CreateResDto deletes(CommonDto.DeletesServDto param){
         int count = 0;
         for(String each : param.getIds()){
-            TbfaqDto.UpdateServDto newParam = TbfaqDto.UpdateServDto.builder().id(each).deleted("Y").build();
+            TbfaqDto.UpdateServDto newParam = TbfaqDto.UpdateServDto.builder().id(each).deleted("Y").isAdmin(param.isAdmin()).build();
             TbfaqDto.CreateResDto result = update(newParam);
             if(!(result.getId()).isEmpty()) {
                 count++;
@@ -107,8 +107,6 @@ public class TbfaqServiceImpl implements TbfaqService {
         return TbfaqDto.CreateResDto.builder().id(count + "").build();
     }
     public TbfaqDto.SelectResDto detail(CommonDto.SelectServDto param){
-        //권한 확인
-        if(!param.isAdmin()){ throw new NoAuthorizationException(""); }
         TbfaqDto.SelectResDto selectDto = tbfaqMapper.detail(param.getId());
         return selectDto;
     }

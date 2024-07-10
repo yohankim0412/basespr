@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <head th:replace="~{@{includes/user/head}}"></head>
+</head>
+<body>
+
+<script id="list_info_tbqnafile" type="text/x-handlebars-template">
+    {{#resultData_tbqnafile}}
+    <li class="item">
+        <input type="hidden" class="input_tbfaqfile_cate" value="{{cate}}"/>
+        <input type="hidden" class="input_tbfaqfile_url" value="{{url}}"/>
+        <div class="img-group">
+            <img src="{{url}}" alt="썸네일" class="thumb">
+            <button type="button" class="btn-delete js-delete" onclick="delete_tbqnafile(this);"></button>
+        </div>
+    </li>
+    {{/resultData_tbqnafile}}
+</script>
+<script type="text/javascript">
+    var list_info_tbqnafile = $("#list_info_tbqnafile").html();
+    var list_info_tbqnafile_template = Handlebars.compile(list_info_tbqnafile);
+</script>
+
+<!--등록 확인 모달창-->
+<div class="dim-layer js-modal">
+    <div class="modal-group modal-group-message">
+        <div class="dim-bg"></div>
+        <div id="layer" class="modal-layer">
+            <div class="modal-container">
+                <div class="box-modal">
+                    <div class="modal-message">
+                        <div class="txt">문의 내용을 등록하시겠습니까?</div>
+                    </div>
+
+                    <div class="btn-group-modal2">
+                        <button type="button" class="btn btn-custom btn-custom-v1 js-modal-master-close">아니오</button>
+                        <button type="button" class="btn btn-custom js-modal-master-close" onclick="create_tbqna()">예</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="wrap">
+    <header class="header">
+        <div class="hd">
+            <div class="hd-tit">1:1 문의하기</div>
+            <button type="button" class="hd-back" onclick="location.href='javascript:history.back(-1);'"></button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="flex-box board-write">
+            <div class="flex-content">
+                <div class="frm-group">
+                    <div class="tit-frm">제목</div>
+                    <input type="text" id="create_tbqna_title" placeholder="제목을 입력해주세요." class="inp-frm inp-frm-v1 input_required" errormsg="필수값입니다.">
+                </div>
+
+                <div class="frm-group">
+                    <div class="tit-frm">문의내용</div>
+                    <textarea id="create_tbqna_content" placeholder="내용을 입력해주세요." class="inp-frm inp-frm-v1 input_required" errormsg="필수값입니다."></textarea>
+                </div>
+
+                <div class="frm-group">
+                    <div class="btn-upload">
+                        <!--<input type="file" id="picupload" value="업로드">-->
+                        <input type="file" id="input_upload_img" onchange="readURLFile(this, listener_after_upload)" accept="image/*"/>
+                        <label for="input_upload_img">파일추가</label>
+                    </div>
+                </div>
+                <script>
+                    function listener_after_upload(file_type, url){
+                        /*alert(file_type);
+                        alert(url);*/
+                        let each_list = [];
+                        let each = {};
+                        each["cate"] = file_type;
+                        each["url"] = url;
+                        each_list.push(each);
+                        $("#tbody_tbqnafile_list").append(list_info_tbqnafile_template({"resultData_tbqnafile":each_list}));
+                    }
+                </script>
+
+                <div class="frm-group">
+                    <ol class="list-upload-gallery" id="tbody_tbqnafile_list">
+                        <!--<li class="item">
+                            <input type="hidden" class="input_tbfaqfile_cate" value="{{cate}}"/>
+                            <input type="hidden" class="input_tbfaqfile_url" value="{{url}}"/>
+                            <div class="img-group">
+                                <img src="/resources/frontuser/img/img_transparent1.png" alt="썸네일" class="thumb" style="background-image: url('/resources/frontuser/img/tmp/img_picture3.png');">
+                                <button type="button" class="btn-delete js-delete" onclick="delete_tbqnafile(this);"></button>
+                            </div>
+                        </li>-->
+                    </ol>
+                </div>
+                <script>
+                    function delete_tbqnafile(obj){
+                        $(obj).parent().parent().remove();
+                    }
+                </script>
+            </div>
+
+            <div class="flex-bottom">
+                <button type="button" class="btn-custom js-modal-open">보내기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<body th:replace="~{@{includes/user/bottom}}"></body>
+
+<script>
+    $( document ).ready(function() {
+        console.log( "ready!" );
+    });
+    function create_tbqna(){
+        let cates = [];
+        let urls = [];
+        let input_tbfaqfile_cate = $(".input_tbfaqfile_cate");
+        let input_tbfaqfile_url = $(".input_tbfaqfile_url");
+        for(let i=0;i<input_tbfaqfile_cate.length;i++){
+            cates.push($(input_tbfaqfile_cate[i]).val());
+            urls.push($(input_tbfaqfile_url[i]).val());
+        }
+
+        if(!listenerBeforeCreate()){
+            return false;
+        }
+        let _param = {
+            'cates' : cates,
+            'urls' : urls,
+            'title' : $("#create_tbqna_title").val(),
+            'content' : $("#create_tbqna_content").val()
+        };
+
+        let _data = new Map();
+        _data.url = "/api/tbqna";
+        _data.type = "POST";
+        _data.param = _param;
+        _data.success = function(obj_data, obj_status, obj_xhr){
+            alert("등록");
+            location.reload();
+        }
+        _data.error = function(obj_data, obj_status, obj_xhr){
+            alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+        }
+        func_ajax(_data);
+    }
+</script>
+
+</body>
+</html>

@@ -1,11 +1,20 @@
-<!---->
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <head th:replace="~{@{includes/user/head}}"></head>
 </head>
 <body>
-Hello! <b style="background-color:yellow;">hahah</b>INDEX!!!
+
+<div class="intro">
+    <div class="tit-group">
+        <img src="/resources/frontuser/img/img_logo1.svg" alt="무인가드" class="img-logo">
+        <div class="tit">무인가드</div>
+        <div class="txt">회원가입 한 번으로 전국 모든 <br>MUIN GUARD PC 방에서 이용 가능해요!</div>
+    </div>
+
+    <a href="/agree" class="btn-custom btn-custom-v1">시작하기</a>
+</div>
+
+<body th:replace="~{@{includes/user/bottom}}"></body>
 </body>
 </html>

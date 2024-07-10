@@ -69,13 +69,13 @@ public class TbgrantServiceImpl implements TbgrantService {
         return tbgrantRepository.save(tbgrant).toCreateResDto();
     }
     public TbgrantDto.CreateResDto delete(CommonDto.DeleteServDto param){
-        TbgrantDto.UpdateServDto newParam = TbgrantDto.UpdateServDto.builder().id(param.getId()).deleted("Y").build();
+        TbgrantDto.UpdateServDto newParam = TbgrantDto.UpdateServDto.builder().id(param.getId()).deleted("Y").reqTbuserId(param.getReqTbuserId()).build();
         return update(newParam);
     }
     public TbgrantDto.CreateResDto deletes(CommonDto.DeletesServDto param){
         int count = 0;
         for(String each : param.getIds()){
-            TbgrantDto.UpdateServDto newParam = TbgrantDto.UpdateServDto.builder().id(each).deleted("Y").build();
+            TbgrantDto.UpdateServDto newParam = TbgrantDto.UpdateServDto.builder().id(each).deleted("Y").reqTbuserId(param.getReqTbuserId()).build();
             TbgrantDto.CreateResDto result = update(newParam);
             if(!(result.getId()).isEmpty()) {
                 count++;

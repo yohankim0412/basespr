@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <head th:replace="~{@{includes/user/head}}"></head>
+</head>
+<body>
+
+<div id="wrap">
+    <div class="container">
+        <div class="flex-box sign">
+            <div class="flex-content">
+                <div class="top-page">
+                    <div class="tit">무인가드</div>
+                    <div class="txt">회원가입 한 번으로 전국 모든 <br>MUIN GUARD PC 방에서 이용 가능해요!</div>
+                </div>
+
+                <div class="frm">
+                    <div class="frm-group">
+                        <div class="tit-frm">이름</div>
+                        <input type="text" id="create_tbuser_name" placeholder="이름을 입력해주세요." class="inp-frm js-frm-focus">
+                    </div>
+
+                    <div class="frm-group">
+                        <div class="tit-frm">휴대폰번호</div>
+                        <input type="text" id="create_tbuser_phone" placeholder="휴대폰 번호를 입력해주세요." class="inp-frm js-frm-focus">
+                    </div>
+
+                    <div class="frm-group">
+                        <div class="tit-frm">생년월일</div>
+                        <input type="date" id="create_tbuser_birth" placeholder="생년월일을 입력해주세요." class="inp-frm js-frm-focus">
+                    </div>
+
+                    <div class="frm-group">
+                        <div class="tit-frm">성별</div>
+                        <select class="inp-frm js-frm-focus" id="create_tbuser_gender" keyword="gender">
+                            <option value="F">여자</option>
+                            <option value="M">남자</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="flex-bottom-sticky">
+                <button type="button" class="btn-custom js-active" onclick="kg()">로그인하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<body th:replace="~{@{includes/user/bottom}}"></body>
+<script>
+
+    function kg(){
+        $.ajax({
+            url : '/api/tbuser/kg',
+            type : 'POST',
+            contentType:'application/json; charset=utf-8',
+            data: JSON.stringify({
+                'name' : $("#create_tbuser_name").val(),
+                'phone' : $("#create_tbuser_phone").val(),
+                'birth' : $("#create_tbuser_birth").val(),
+                'gender' : $("#create_tbuser_gender").val(),
+                'username' : "username",
+                'password' : "password"
+            }),
+            beforeSend:function(){
+                //
+            },
+            success : function(data, status, xhr){
+                //alert(JSON.stringify(data));
+                //alert(JSON.stringify(data['refreshToken']));
+
+                localStorage.setItem("refreshToken", data['refreshToken']);
+                localStorage.setItem("accessToken", data['accessToken']);
+
+                location.href = "/home";
+            },
+            error : function(request, status, error){
+                //alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            },
+            complete:function(){
+                //
+            }
+        });
+    }
+</script>
+</body>
+</html>

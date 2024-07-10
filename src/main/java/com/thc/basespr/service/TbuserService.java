@@ -2,6 +2,7 @@ package com.thc.basespr.service;
 
 import com.thc.basespr.dto.CommonDto;
 import com.thc.basespr.dto.TbuserDto;
+import com.thc.basespr.security.JwtTokenDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.util.List;
 //2024-07-09 전체 수정
 @Service
 public interface TbuserService {
+    public JwtTokenDto tempKgcert(TbuserDto.CreateServDto param);
     public TbuserDto.CreateResDto signup(TbuserDto.CreateServDto param);
     /**/
     public TbuserDto.CreateResDto create(TbuserDto.CreateServDto param);

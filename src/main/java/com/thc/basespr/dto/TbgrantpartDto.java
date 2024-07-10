@@ -21,6 +21,7 @@ public class TbgrantpartDto {
 
 			,{"tbnotice", "공지사항"}
 			,{"tbfaq", "FAQ"}
+			,{"tbqna", "1:1문의"}
 			,{"tbbanner", "배너"}
 			,{"tbpopup", "팝업"}
 			,{"tbpost", "게시글"}

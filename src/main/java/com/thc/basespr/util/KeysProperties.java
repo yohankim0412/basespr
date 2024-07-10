@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 public class KeysProperties {
+	//kg
+	@Value("${kg.mid}") private String mid;
+	@Value("${kg.apiKey}") private String apiKey;
 	//aws
 	@Value("${aws.s3.bucket_name}") private String bucket_name;
 	@Value("${aws.s3.read_s3_url}") private String read_s3_url;

@@ -21,11 +21,13 @@ public class DefaultPageController {
     public String index(){
         return "index";
     }
-    @GetMapping({"/test"})
-    public String test(){
-        return "index";
-    }
-    
+
+    @GetMapping("/home") public String home(){ return "home"; }
+    @GetMapping({"/admin"}) public String admin(){ return "admin"; }
+    @GetMapping({"/agree"}) public String agree(){ return "agree"; }
+    @GetMapping({"/cs"}) public String cs(){ return "cs"; }
+    @GetMapping({"/test"}) public String test(){ return "test"; }
+
     @ResponseBody
     @RequestMapping(value = "/uploadfile/{file_name:.+}", method = {RequestMethod.GET,RequestMethod.POST})
     public byte[] getImage(@PathVariable("file_name") String file_name, HttpServletRequest request) throws Exception {

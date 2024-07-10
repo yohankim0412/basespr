@@ -147,7 +147,7 @@ function listener_upload_file(obj_file, file_type, listener_after_upload) {
 			switch(xhr.status){
 				case 201:
 					//alert(data);
-					listener_after_upload(file_type, data);
+					listener_after_upload(file_type, data.url);
 					break;
 				default:
 					console.log("no matching status code");

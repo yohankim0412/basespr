@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <head th:replace="~{@{includes/user/head}}"></head>
+</head>
+<body>
+
+<div id="wrap">
+    <div class="container">
+        <div class="flex-box sign">
+            <div class="flex-content">
+                <div class="top-page">
+                    <div class="tit">무인가드</div>
+                    <div class="txt">회원가입 한 번으로 전국 모든 <br>MUIN GUARD PC 방에서 이용 가능해요!</div>
+                    <div class="txt2">매장 관리자 승인없이 입장 가능한 무인 PC방, <br>무인노래방 등을 방문하신 고객님은 이용약관에 동의하신 후 <br>하단의 <strong>가입하기</strong>를 눌러 가입을 진행해주세요.</div>
+                </div>
+
+                <ol class="list-agree">
+                    <li>
+                        <div class="box">
+                            <div class="ck-group">
+                                <input id="ck1" type="checkbox" class="ck-custom-agree input_agree_each input_agree_required" keyword="ch1" onchange="listener_chk_agree(this, 'input_agree')">
+                                <label for="ck1"><span class="custom"></span></label>
+                            </div>
+
+                            <div class="label">
+                                <div class="fold js-fold">서비스 이용약관<img src="/resources/frontuser/img/ico_arrow_bottom1.svg" alt=" " class="ico-arrow"></div>
+                                <div class="unfold js-unfold">
+									<textarea class="inp-frm">서비스 이용약관 내용이 들어갑니다.
+서비스 이용약관 내용이 들어갑니다.
+서비스 이용약관 내용이 들어갑니다.
+서비스 이용약관 내용이 들어갑니다.</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="box">
+                            <div class="ck-group">
+                                <input id="ck2" type="checkbox" class="ck-custom-agree input_agree_each input_agree_required" keyword="ch2" onchange="listener_chk_agree(this, 'input_agree')">
+                                <label for="ck2"><span class="custom"></span></label>
+                            </div>
+
+                            <div class="label">
+                                <div class="fold js-fold">개인정보이용정책 동의<img src="/resources/frontuser/img/ico_arrow_bottom1.svg" alt=" " class="ico-arrow"></div>
+                                <div class="unfold js-unfold">
+									<textarea class="inp-frm">개인정보이용정책 내용이 들어갑니다.
+개인정보이용정책 내용이 들어갑니다.
+개인정보이용정책 내용이 들어갑니다.
+개인정보이용정책 내용이 들어갑니다.</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="box">
+                            <div class="ck-group">
+                                <input id="ck3" type="checkbox" class="ck-custom-agree input_agree_each input_agree_required" keyword="ch3" onchange="listener_chk_agree(this, 'input_agree')">
+                                <label for="ck3"><span class="custom"></span></label>
+                            </div>
+
+                            <div class="label">
+                                <div class="fold js-fold">개인정보 제3자 제공 동의<img src="/resources/frontuser/img/ico_arrow_bottom1.svg" alt=" " class="ico-arrow"></div>
+                                <div class="unfold js-unfold">
+									<textarea class="inp-frm">개인정보 제3자 제공 내용이 들어갑니다.
+개인정보 제3자 제공 내용이 들어갑니다.
+개인정보 제3자 제공 내용이 들어갑니다.
+개인정보 제3자 제공 내용이 들어갑니다.</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="box">
+                            <div class="ck-group">
+                                <input id="ck4" type="checkbox" class="ck-custom-agree input_agree_each" keyword="ch4" onchange="listener_chk_agree(this, 'input_agree')">
+                                <label for="ck4"><span class="custom"></span></label>
+                            </div>
+
+                            <div class="label">
+                                <div class="fold js-fold">마케팅정보 수신 동의 (선택)<img src="/resources/frontuser/img/ico_arrow_bottom1.svg" alt=" " class="ico-arrow"></div>
+                                <div class="unfold js-unfold">
+									<textarea class="inp-frm">마케팅정보 수신 내용이 들어갑니다.
+마케팅정보 수신 내용이 들어갑니다.
+마케팅정보 수신 내용이 들어갑니다.
+마케팅정보 수신 내용이 들어갑니다.</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ol>
+
+                <div class="all-agree">
+                    <div class="ck-group">
+                        <input id="ck0" type="checkbox" class="ck-custom-agree js-ck input_agree_all" keyword="all" onchange="listener_chk_agree(this, 'input_agree')">
+                        <label for="ck0"><span class="custom"></span></label>
+                    </div>
+
+                    <div class="label">모두 동의합니다.<span>(선택) 마케팅정보 수신 동의를 포함하여 모두 동의합니다.</span></div>
+                </div>
+            </div>
+
+            <div class="flex-bottom">
+                <button type="button" class="btn-custom js-active" disabled onclick="location.href='/tbuser/kg'">가입하기</button>
+
+                <!--<div class="btn-link">
+                    <a href="002_qr.html">회원전용 QR발급</a>
+                    <div class="txt">매장에서 승인이 되어야 QR코드로 입장이 가능해요. <br>회원전용 매장이라면 [회원전용 QR발급 버튼을 통해 등록해주세요.</div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function listener_chk_agree(obj_this, obj_class){
+    listener_chk(obj_this, obj_class);
+    //alert(1);
+    let all_checked = true;
+    let input_agree_required = $(".input_agree_required");
+    for(let i=0;i<input_agree_required.length;i++){
+        let each_checked = $(input_agree_required[i]).prop("checked");
+        if(each_checked){
+        } else {
+            all_checked = false;
+        }
+    }
+    if(all_checked){
+        $(".js-active").attr("disabled", false);
+    } else {
+        $(".js-active").attr("disabled", true);
+    }
+}
+</script>
+
+<body th:replace="~{@{includes/user/bottom}}"></body>
+</body>
+</html>
