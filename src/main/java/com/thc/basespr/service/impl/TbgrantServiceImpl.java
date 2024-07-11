@@ -5,6 +5,7 @@ import com.thc.basespr.dto.CommonDto;
 import com.thc.basespr.dto.TbgrantDto;
 import com.thc.basespr.dto.TbgrantpartDto;
 import com.thc.basespr.exception.NoAuthorizationException;
+import com.thc.basespr.exception.NoMatchingDataException;
 import com.thc.basespr.mapper.TbgrantMapper;
 import com.thc.basespr.repository.TbgrantRepository;
 import com.thc.basespr.service.TbgrantService;
@@ -87,6 +88,7 @@ public class TbgrantServiceImpl implements TbgrantService {
         //권한 확인
         if(!param.isAdmin()){ throw new NoAuthorizationException(""); }
         TbgrantDto.SelectResDto selectDto = tbgrantMapper.detail(param.getId());
+        if(selectDto == null){ throw new NoMatchingDataException(""); }
         selectDto.setTbgrantparts(tbgrantpartService.list(TbgrantpartDto.ListServDto.builder().deleted("N").tbgrantId(selectDto.getId()).reqTbuserId(param.getReqTbuserId()).build()));
         return selectDto;
     }

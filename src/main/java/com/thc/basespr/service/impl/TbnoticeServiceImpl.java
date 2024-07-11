@@ -4,6 +4,7 @@ import com.thc.basespr.domain.Tbnotice;
 import com.thc.basespr.dto.CommonDto;
 import com.thc.basespr.dto.TbnoticeDto;
 import com.thc.basespr.exception.NoAuthorizationException;
+import com.thc.basespr.exception.NoMatchingDataException;
 import com.thc.basespr.mapper.TbnoticeMapper;
 import com.thc.basespr.repository.TbnoticeRepository;
 import com.thc.basespr.service.TbnoticeService;
@@ -74,6 +75,7 @@ public class TbnoticeServiceImpl implements TbnoticeService {
         //권한 확인
         if(!param.isAdmin()){ throw new NoAuthorizationException(""); }
         TbnoticeDto.SelectResDto selectDto = tbnoticeMapper.detail(param.getId());
+        if(selectDto == null){ throw new NoMatchingDataException(""); }
         return selectDto;
     }
 

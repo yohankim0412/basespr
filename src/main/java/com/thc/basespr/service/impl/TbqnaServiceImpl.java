@@ -5,6 +5,7 @@ import com.thc.basespr.dto.CommonDto;
 import com.thc.basespr.dto.TbqnaDto;
 import com.thc.basespr.dto.TbqnafileDto;
 import com.thc.basespr.exception.NoAuthorizationException;
+import com.thc.basespr.exception.NoMatchingDataException;
 import com.thc.basespr.mapper.TbqnaMapper;
 import com.thc.basespr.repository.TbqnaRepository;
 import com.thc.basespr.service.TbqnaService;
@@ -56,7 +57,7 @@ public class TbqnaServiceImpl implements TbqnaService {
     public TbqnaDto.CreateResDto update(TbqnaDto.UpdateServDto param){
         //권한 확인
         if(!param.isAdmin()){ throw new NoAuthorizationException(""); }
-        Tbqna tbqna = tbqnaRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException(""));
+        Tbqna tbqna = tbqnaRepository.findById(param.getId()).orElseThrow(() -> new NoMatchingDataException(""));
         if(param.getDeleted() != null) {
             tbqna.setDeleted(param.getDeleted());
         }
@@ -91,14 +92,15 @@ public class TbqnaServiceImpl implements TbqnaService {
     }
     public TbqnaDto.SelectResDto detail(CommonDto.SelectServDto param){
         TbqnaDto.SelectResDto selectDto = tbqnaMapper.detail(param.getId());
-        
+        if(selectDto == null){ throw new NoMatchingDataException(""); }
+        //권한 확인
+        if(!param.isAdmin() && !(param.getReqTbuserId()).equals(selectDto.getTbuserId())){ throw new NoAuthorizationException(""); }
+
         //날짜 표기 추가
         String createdAt = selectDto.getCreatedAt();
         selectDto.setCreatedAtOnlyDate(createdAt.substring(0, 19));
 
-        //권한 확인
-        if(!param.isAdmin() && !(param.getReqTbuserId()).equals(selectDto.getTbuserId())){ throw new NoAuthorizationException(""); }
-
+        //파일 리스트 추가
         TbqnafileDto.ListServDto listServDto = TbqnafileDto.ListServDto.builder().tbqnaId(selectDto.getId()).deleted("N").build();
         List<TbqnafileDto.SelectResDto> files = tbqnafileService.list(listServDto);
         selectDto.setFiles(files);
@@ -112,7 +114,7 @@ public class TbqnaServiceImpl implements TbqnaService {
     }
 
     public List<TbqnaDto.SelectResDto> moreList(TbqnaDto.MoreListServDto param){
-        //내가 쓴 글 확인
+        //내가 쓴 글 조희
         if("my".equals(param.getTbuserId())){
             param.setTbuserId(param.getReqTbuserId());
         }

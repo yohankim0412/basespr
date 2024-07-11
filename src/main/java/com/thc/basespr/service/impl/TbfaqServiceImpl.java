@@ -36,29 +36,25 @@ public class TbfaqServiceImpl implements TbfaqService {
         //권한 확인
         if(!param.isAdmin()){ throw new NoAuthorizationException(""); }
 
-        Tbfaq tbfaq = tbfaqRepository.findById(param.getId())
-                .orElseThrow(() -> new NoMatchingDataException(""));
-        int nowSequence = tbfaq.getSequence();
+        Tbfaq tbfaq = tbfaqRepository.findById(param.getId()).orElseThrow(() -> new NoMatchingDataException(""));
+        int nowSequence = tbfaq.getSequence(); // 현재 순번을 알아본다. // 2
 
-        int targetSequence = nowSequence;
+        int targetSequence = nowSequence; // 2
         if("up".equals(param.getWay())){
-            targetSequence++;
+            targetSequence++; // 3!!
         } else {
-            targetSequence--;
+            targetSequence--; // 1
         }
-
-        logger.info("!!!!!" + targetSequence);
-
         if(targetSequence == 0 || targetSequence > tbfaqMapper.pagedListCount(new TbfaqDto.PagedListServDto())){
             return null;
         } else {
             //잠시 순번에서 제외
-            update(TbfaqDto.UpdateServDto.builder().id(tbfaq.getId()).sequence(-1).isAdmin(param.isAdmin()).build());
+            update(TbfaqDto.UpdateServDto.builder().id(tbfaq.getId()).sequence(-1).isAdmin(param.isAdmin()).build()); // 2-> -1
             //바꾸고자 하는 순번의 정보에 이전 순번 저장
-            Tbfaq targetTbfaq = tbfaqRepository.findBySequence(targetSequence);
-            update(TbfaqDto.UpdateServDto.builder().id(targetTbfaq.getId()).sequence(nowSequence).isAdmin(param.isAdmin()).build());
+            Tbfaq targetTbfaq = tbfaqRepository.findBySequence(targetSequence); // 현재 3번에 위치한 애 정보 가져오기
+            update(TbfaqDto.UpdateServDto.builder().id(targetTbfaq.getId()).sequence(nowSequence).isAdmin(param.isAdmin()).build()); // 3번애 있는 애를 2번으로 업데이트
             //다시 수정하고 리턴
-            return update(TbfaqDto.UpdateServDto.builder().id(tbfaq.getId()).sequence(targetSequence).isAdmin(param.isAdmin()).build());
+            return update(TbfaqDto.UpdateServDto.builder().id(tbfaq.getId()).sequence(targetSequence).isAdmin(param.isAdmin()).build()); //2번에 있는 애를 3번으로 업데이트
         }
     }
 
@@ -108,6 +104,7 @@ public class TbfaqServiceImpl implements TbfaqService {
     }
     public TbfaqDto.SelectResDto detail(CommonDto.SelectServDto param){
         TbfaqDto.SelectResDto selectDto = tbfaqMapper.detail(param.getId());
+        if(selectDto == null){ throw new NoMatchingDataException(""); }
         return selectDto;
     }
 

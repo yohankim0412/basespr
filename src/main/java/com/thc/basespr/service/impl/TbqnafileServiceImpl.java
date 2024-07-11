@@ -4,6 +4,7 @@ import com.thc.basespr.domain.Tbqnafile;
 import com.thc.basespr.dto.CommonDto;
 import com.thc.basespr.dto.TbqnafileDto;
 import com.thc.basespr.exception.NoAuthorizationException;
+import com.thc.basespr.exception.NoMatchingDataException;
 import com.thc.basespr.mapper.TbqnafileMapper;
 import com.thc.basespr.repository.TbqnafileRepository;
 import com.thc.basespr.service.TbqnafileService;
@@ -68,6 +69,7 @@ public class TbqnafileServiceImpl implements TbqnafileService {
     }
     public TbqnafileDto.SelectResDto detail(CommonDto.SelectServDto param){
         TbqnafileDto.SelectResDto selectDto = tbqnafileMapper.detail(param.getId());
+        if(selectDto == null){ throw new NoMatchingDataException(""); }
         return selectDto;
     }
 

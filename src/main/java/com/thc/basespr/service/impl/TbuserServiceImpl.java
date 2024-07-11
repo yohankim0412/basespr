@@ -6,6 +6,7 @@ import com.thc.basespr.domain.TbuserRoleType;
 import com.thc.basespr.dto.CommonDto;
 import com.thc.basespr.dto.TbuserDto;
 import com.thc.basespr.exception.NoAuthorizationException;
+import com.thc.basespr.exception.NoMatchingDataException;
 import com.thc.basespr.mapper.TbuserMapper;
 import com.thc.basespr.repository.RoleTypeRepository;
 import com.thc.basespr.repository.TbuserRepository;
@@ -149,7 +150,13 @@ public class TbuserServiceImpl implements TbuserService {
         return TbuserDto.CreateResDto.builder().id(count + "").build();
     }
     public TbuserDto.SelectResDto detail(CommonDto.SelectServDto param){
+        //내가 쓴 글 조희
+        if("my".equals(param.getId())){
+            param.setId(param.getReqTbuserId());
+        }
         TbuserDto.SelectResDto selectDto = tbuserMapper.detail(param.getId());
+        if(selectDto == null){ throw new NoMatchingDataException(""); }
+
         return selectDto;
     }
 

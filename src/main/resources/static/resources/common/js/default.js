@@ -92,6 +92,7 @@ function access_token(_data){
 				default:
 					alert("error occured. try again");
 					console.log("no matching status code");
+					break;
 			}
 		},
 		error: (data, status, xhr)=>{

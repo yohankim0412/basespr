@@ -4,6 +4,8 @@ import com.thc.basespr.domain.Tbgrantuser;
 import com.thc.basespr.dto.CommonDto;
 import com.thc.basespr.dto.TbgrantDto;
 import com.thc.basespr.dto.TbgrantuserDto;
+import com.thc.basespr.exception.NoAuthorizationException;
+import com.thc.basespr.exception.NoMatchingDataException;
 import com.thc.basespr.mapper.TbgrantuserMapper;
 import com.thc.basespr.repository.TbgrantuserRepository;
 import com.thc.basespr.service.TbgrantuserService;
@@ -33,10 +35,11 @@ public class TbgrantuserServiceImpl implements TbgrantuserService {
     /**/
 
     public TbgrantuserDto.CreateResDto create(TbgrantuserDto.CreateServDto param){
+        if(!param.isAdmin()){ throw new NoAuthorizationException(""); }
         return tbgrantuserRepository.save(param.toEntity()).toCreateResDto();
     }
     public TbgrantuserDto.CreateResDto update(TbgrantuserDto.UpdateServDto param){
-        System.out.println(param);
+        if(!param.isAdmin()){ throw new NoAuthorizationException(""); }
         Tbgrantuser tbgrantuser = tbgrantuserRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException(""));
         if(param.getDeleted() != null) {
             tbgrantuser.setDeleted(param.getDeleted());
@@ -50,6 +53,7 @@ public class TbgrantuserServiceImpl implements TbgrantuserService {
         return tbgrantuserRepository.save(tbgrantuser).toCreateResDto();
     }
     public TbgrantuserDto.CreateResDto delete(CommonDto.DeleteServDto param){
+        if(!param.isAdmin()){ throw new NoAuthorizationException(""); }
         TbgrantuserDto.UpdateServDto newParam = TbgrantuserDto.UpdateServDto.builder().id(param.getId()).deleted("Y").isAdmin(param.isAdmin()).reqTbuserId(param.getReqTbuserId()).build();
         return update(newParam);
     }
@@ -66,6 +70,7 @@ public class TbgrantuserServiceImpl implements TbgrantuserService {
     }
     public TbgrantuserDto.SelectResDto detail(CommonDto.SelectServDto param){
         TbgrantuserDto.SelectResDto selectDto = tbgrantuserMapper.detail(param.getId());
+        if(selectDto == null){ throw new NoMatchingDataException(""); }
         return selectDto;
     }
 

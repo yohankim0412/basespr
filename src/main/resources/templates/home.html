@@ -51,5 +51,11 @@
 </div>
 
 <body th:replace="~{@{includes/user/bottom}}"></body>
+<script>
+    let refreshToken = localStorage.getItem("refreshToken");
+    if(isNull(refreshToken)){
+        location.replace("/index");
+    }
+</script>
 </body>
 </html>

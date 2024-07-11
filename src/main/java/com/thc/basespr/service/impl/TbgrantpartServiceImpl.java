@@ -4,6 +4,8 @@ import com.thc.basespr.domain.Tbgrantpart;
 import com.thc.basespr.dto.CommonDto;
 import com.thc.basespr.dto.TbgrantDto;
 import com.thc.basespr.dto.TbgrantpartDto;
+import com.thc.basespr.exception.NoAuthorizationException;
+import com.thc.basespr.exception.NoMatchingDataException;
 import com.thc.basespr.mapper.TbgrantpartMapper;
 import com.thc.basespr.repository.TbgrantpartRepository;
 import com.thc.basespr.service.TbgrantpartService;
@@ -30,21 +32,23 @@ public class TbgrantpartServiceImpl implements TbgrantpartService {
         this.tbgrantpartMapper = tbgrantpartMapper;
     }
 
-    public TbgrantpartDto.CreateResDto toggle(TbgrantpartDto.ToggleServDto params){
+    public TbgrantpartDto.CreateResDto toggle(TbgrantpartDto.ToggleServDto param){
+        //권한 확인
+        if(!param.isAdmin()){ throw new NoAuthorizationException(""); }
         TbgrantpartDto.CreateResDto returnVal = null;
-        Tbgrantpart tbgrantpart = tbgrantpartRepository.findByTbgrantIdAndCateAndContent(params.getTbgrantId(), params.getCate(), params.getContent());
-        if(params.isWay()){
+        Tbgrantpart tbgrantpart = tbgrantpartRepository.findByTbgrantIdAndCateAndContent(param.getTbgrantId(), param.getCate(), param.getContent());
+        if(param.isWay()){
             if(tbgrantpart == null){
-                returnVal = tbgrantpartRepository.save(params.toEntity()).toCreateResDto();
+                returnVal = tbgrantpartRepository.save(param.toEntity()).toCreateResDto();
             } else {
-                returnVal = tbgrantpart.toCreateResDto();
+                TbgrantpartDto.UpdateServDto updateServDto = TbgrantpartDto.UpdateServDto.builder().id(tbgrantpart.getId()).deleted("N").isAdmin(param.isAdmin()).build();
+                returnVal = update(updateServDto);
             }
         } else {
             if(tbgrantpart == null){
             } else {
-                CommonDto.DeleteServDto deleteParam = CommonDto.DeleteServDto.builder().id(tbgrantpart.getId()).reqTbuserId(params.getReqTbuserId()).build();
-                delete(deleteParam);
-                returnVal = tbgrantpart.toCreateResDto();
+                CommonDto.DeleteServDto deleteParam = CommonDto.DeleteServDto.builder().id(tbgrantpart.getId()).reqTbuserId(param.getReqTbuserId()).build();
+                returnVal = delete(deleteParam);
             }
 
         }
@@ -91,6 +95,7 @@ public class TbgrantpartServiceImpl implements TbgrantpartService {
 
     public TbgrantpartDto.SelectResDto detail(CommonDto.SelectServDto param){
         TbgrantpartDto.SelectResDto selectDto = tbgrantpartMapper.detail(param.getId());
+        if(selectDto == null){ throw new NoMatchingDataException(""); }
         return selectDto;
     }
 

@@ -9,13 +9,19 @@
     {{#resultData_tbqna}}
     <li>
         <div class="fold js-fold">
-            <div class="tit">{{title}}</div>
+            <div class="tit">[<font class="font_process_{{process}}">{{process}}</font>] {{title}}</div>
             <div class="txt">{{createdAtOnlyDate}}</div>
             <img src="/resources/frontuser/img/ico_arrow_bottom1.svg" alt=" " class="ico-arrow">
         </div>
 
         <div class="unfold js-unfold">
             <div class="txt">{{content}}</div>
+            <br/>
+            <div class="frm-group">
+                <ol class="list-upload-gallery" id="tbody_tbqnafile_list_{{id}}">
+                </ol>
+            </div>
+            <div class="txt" style="color:#00479c;">{{answer}}</div>
         </div>
     </li>
     {{/resultData_tbqna}}
@@ -23,6 +29,20 @@
 <script type="text/javascript">
     var list_info_tbqna = $("#list_info_tbqna").html();
     var list_info_tbqna_template = Handlebars.compile(list_info_tbqna);
+</script>
+
+<script id="list_info_tbqnafile" type="text/x-handlebars-template">
+    {{#resultData_tbqnafile}}
+    <li class="item">
+        <div class="img-group">
+            <img src="{{url}}" alt="썸네일" class="thumb">
+        </div>
+    </li>
+    {{/resultData_tbqnafile}}
+</script>
+<script type="text/javascript">
+    var list_info_tbqnafile = $("#list_info_tbqnafile").html();
+    var list_info_tbqnafile_template = Handlebars.compile(list_info_tbqnafile);
 </script>
 
 <div id="wrap">
@@ -57,7 +77,7 @@
                     <div class="col-sm-4">
                         <select class="select_search_keyword form-control m-b" keyword="process" id="search_process" onchange="listener_keyword_changed()">
                             <option value="" selected="selected">전체</option>
-                            <option value="yet">접수</option>
+                            <option value="yet">접수중</option>
                             <option value="ing">보류</option>
                             <option value="done">답변완료</option>
                             <option value="not">거절</option>
@@ -200,15 +220,25 @@
                 $("#input_keyword_changed").val("");
             }
             if(each_list.length == 0){
-                alert("no Data");
+                // alert("no Data");
             }
 
             if($("#orderway").val() == "desc"){
-                $("#tbody_tbqna_list").append(list_info_tbqna_template({"resultData_tbqna":each_list}));
             } else {
-                //each_list
                 each_list.reverse();
-                $("#tbody_tbqna_list").prepend(list_info_tbqna_template({"resultData_tbqna":each_list}));
+            }
+
+            for(each of each_list) {
+                let tlist = [];
+                tlist.push(each);
+                if ($("#orderway").val() == "desc") {
+                    $("#tbody_tbqna_list").append(list_info_tbqna_template({"resultData_tbqna": tlist}));
+                } else {
+                    $("#tbody_tbqna_list").prepend(list_info_tbqna_template({"resultData_tbqna": tlist}));
+                }
+                let each_id = each.id;
+                let files = each.files;
+                $("#tbody_tbqnafile_list_" + each.id).append(list_info_tbqnafile_template({"resultData_tbqnafile": files}));
             }
 
             let detailKeys = Object.keys(obj_data);

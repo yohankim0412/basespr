@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 //2024-07-08 추가(클래스 처음 추가함)
+// 어드민의 접속 권한과 관련된 클래스
 @Getter
 @Table(indexes = {
         @Index(columnList = "deleted")
