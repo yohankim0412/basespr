@@ -14,7 +14,10 @@
 			 ,tbuser.name
 			 ,tbuser.phone
 			 ,tbuser.img
+			 ,tbuser.brief
 			 ,tbuser.content
+			 ,tbuser.popup
+			 ,tbuser.agreethird
 		FROM tbuser
 		WHERE tbuser.id = #{id}
 	</select>

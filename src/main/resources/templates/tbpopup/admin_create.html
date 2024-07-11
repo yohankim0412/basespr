@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <head th:replace="~{@{includes/admin/head}}"></head>
+</head>
+<body>
+
+<div id="wrapper">
+    <body th:replace="~{@{includes/admin/nav}}"></body>
+    <script>
+        $(".sidemenu_li_tbpopup").addClass("active");
+    </script>
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <body th:replace="~{@{includes/admin/navbar_top}}"></body>
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2>팝업 신규</h2>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/admin">Home</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/tbpopup/admin_list">글 모음</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/tbpopup/admin_list">팝업 목록</a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        <strong>팝업 신규</strong>
+                    </li>
+                </ol>
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+
+        <div class="animated fadeInRight" style="padding-top:12.5px;padding-bottom:0px;">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox-title">
+                        <h5>신규 등록</h5>
+                    </div>
+                    <div class="ibox-content" style="padding-bottom:0.1px;">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">*제목</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="input_required form-control m-b" id="create_tbpopup_title" keyword="title" placeholder="내용을 입력하세요" errormsg="필수값입니다."/>
+                            </div>
+                            <label class="col-sm-6"></label>
+
+                            <label class="col-sm-2 col-form-label">내용</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control m-b" id="create_tbpopup_content" keyword="content" onchange="listener_maxlength_check(this, 2000);" rows="4" placeholder="내용을 입력하세요"></textarea>
+                            </div>
+
+                            <label class="col-sm-2">
+                                대표사진
+                                <input class="hide" type="file" id="input_upload_img" onchange="readURLFile(this, listener_after_upload)" accept="image/*"/>
+                                <label for="input_upload_img"><div class="btn btn-default btn-sm">설정</div></label>
+                            </label>
+                            <div class="col-sm-10">
+                                <input type="hidden1" class="input_required form-control m-b" id="create_tbpopup_img" keyword="img" placeholder="내용을 입력하세요" errormsg="사진을 선택해주세요." onchange="listener_tbpopup_changed()"/>
+                                <img id="img_tbpopup_img" class="img-fluid" style="height:100px;" src="/resources/frontuser/img/img_transparent1.png"/>
+                            </div>
+                            <script>
+                                function listener_after_upload(file_type, url){
+                                    //create_tbqnafile(file_type, url);
+                                    $("#img_tbpopup_img").attr("src", url);
+                                    $("#create_tbpopup_img").val(url);
+                                }
+                                function listener_tbpopup_changed(){
+                                    //create_tbqnafile(file_type, url);
+                                    $("#img_tbpopup_img").attr("src", $("#create_tbpopup_img").val());
+                                }
+                            </script>
+
+                        </div>
+                        <div class="m-b" style="text-align: right;">
+                            <button class="btn btn-primary btn-sm" onclick="create_tbpopup()">등록하기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $( document ).ready(function() {
+                console.log( "ready!" );
+                //create_tbpopup();
+            });
+            function create_tbpopup(){
+                if(!listenerBeforeCreate()){
+                    return false;
+                }
+                let _param = {
+                    'title' : $("#create_tbpopup_title").val(),
+                    'cate' : $("#create_tbpopup_cate").val(),
+                    'content' : $("#create_tbpopup_content").val(),
+                    'img' : $("#create_tbpopup_img").val()
+                };
+
+                let _data = new Map();
+                _data.url = "/api/tbpopup";
+                _data.type = "POST";
+                _data.param = _param;
+                _data.success = function(obj_data, obj_status, obj_xhr){
+                    alert("등록");
+                    location.reload();
+                }
+                _data.error = function(obj_data, obj_status, obj_xhr){
+                    alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+                }
+                func_ajax(_data);
+            }
+        </script>
+        <body th:replace="~{@{includes/admin/footer}}"></body>
+    </div>
+    <body th:replace="~{@{includes/admin/right_sidebar}}"></body>
+</div>
+<body th:replace="~{@{includes/admin/bottom}}"></body>
+</body>
+</html>

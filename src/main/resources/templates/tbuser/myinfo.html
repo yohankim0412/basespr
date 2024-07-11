@@ -5,12 +5,14 @@
 </head>
 <body>
 
+<input type="hidden" id="detail_tbuser_id"/>
+<input type="hidden" id="detail_tbuser_img" keyword="img"/>
 
 <!--프로필 편집 모달창-->
-<div class="dim-layer js-modal">
+<div class="dim-layer js-modal js-modal_profile">
     <div class="modal-group">
         <div class="dim-bg"></div>
-        <div id="layer" class="modal-layer">
+        <div id="layer1" class="modal-layer">
             <div class="modal-container">
                 <div class="box-modal">
                     <div class="modal-top">
@@ -19,53 +21,36 @@
 
                     <div class="modal-profile">
                         <div class="profile-photo">
-                            <img src="../img/img_transparent1.png" alt="썸네일" class="thumb" style="background-image: url('../img/tmp/img_picture1.png');">
+                            <img id="img_tbuser_img" src="/resources/frontuser/img/tmp/img_picture1.png" alt="썸네일" class="thumb">
                             <div class="btn-upload2">
-                                <input type="file" id="picupload" value="업로드">
-                                <label for="picupload"></label>
+                                <input type="file" id="input_upload_img" onchange="readURLFile(this, listener_after_upload)" accept="image/*"/>
+                                <label for="input_upload_img"></label>
                             </div>
                         </div>
+                        <script>
+                            function listener_after_upload(file_type, url){
+                                /*alert(file_type);
+                                alert(url);*/
+                                $("#detail_tbuser_img").val(url);
+                                update_tbuser("#detail_tbuser_img");
+                            }
+                        </script>
 
-                        <div class="profile-name js-modal2-open">닉네임</div>
+                        <div class="profile-name js-modal2-open"><font class="font_tbuser_nick">-</font></div>
 
                         <div class="frm-group frm-group-v1">
                             <div class="tit-frm">자기소개</div>
-                            <input type="text" placeholder="나를 소개해주세요!" class="inp-frm inp-frm-v1 js-frm-focus">
+                            <input type="text" id="detail_tbuser_brief" keyword="brief" onchange="update_tbuser(this)" placeholder="나를 소개해주세요!" class="inp-frm inp-frm-v1 js-frm-focus">
                         </div>
 
                         <div class="frm-group frm-group-v1">
                             <div class="tit-frm">상세내용</div>
-                            <textarea placeholder="주로 하는 게임, 취미 등을 작성해보세요!" class="inp-frm inp-frm-v1 js-frm-focus"></textarea>
+                            <textarea id="detail_tbuser_content" keyword="content" onchange="update_tbuser(this)" placeholder="주로 하는 게임, 취미 등을 작성해보세요!" class="inp-frm inp-frm-v1 js-frm-focus"></textarea>
                         </div>
                     </div>
 
                     <div class="btn-group-modal">
-                        <button type="button" class="btn btn-custom js-modal-master-close">저장</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--닉네임 최초 변경 모달창-->
-<div class="dim-layer js-modal2">
-    <div class="modal-group modal-group-message">
-        <div class="dim-bg"></div>
-        <div id="layer" class="modal-layer">
-            <div class="modal-container">
-                <div class="box-modal">
-                    <div class="modal-frm">
-                        <div class="txt">닉네임은 최초 1회 무료 변경이 가능해요! <br>이후 변경 시 포인트가 소요됩니다.</div>
-
-                        <div class="frm-group">
-                            <div class="tit-frm">변경할 닉네임</div>
-                            <input type="text" placeholder="변경할 닉네임을 입력해주세요. (2~8자리)" class="inp-frm">
-                        </div>
-                    </div>
-
-                    <div class="btn-group-modal">
-                        <button type="button" class="btn btn-custom js-modal-master-close js-modal4-open">확인</button>
+                        <button type="button" class="btn btn-custom js-modal-master-close">닫기</button>
                     </div>
                 </div>
             </div>
@@ -74,18 +59,22 @@
 </div>
 
 <!--닉네임 변경 모달창-->
-<div class="dim-layer js-modal3">
+<div class="dim-layer js-modal2">
     <div class="modal-group modal-group-message">
         <div class="dim-bg"></div>
-        <div id="layer" class="modal-layer">
+        <div id="layer2" class="modal-layer">
             <div class="modal-container">
                 <div class="box-modal">
                     <div class="modal-frm">
+                        <div class="txt">닉네임은 최초 1회 무료 변경이 가능해요! <br>이후 변경 시 포인트가 소요됩니다.</div>
                         <div class="txt">닉네임을 변경 시 500P가 사용됩니다. <br>변경하시겠습니까?</div>
 
                         <div class="frm-group">
                             <div class="tit-frm">변경할 닉네임</div>
                             <input type="text" placeholder="변경할 닉네임을 입력해주세요. (2~8자리)" class="inp-frm">
+                        </div>
+                        <div style="text-align: right">
+                            <a class="js-modal-master-close">취소하기</a>
                         </div>
                     </div>
 
@@ -98,54 +87,16 @@
     </div>
 </div>
 
-<!--닉네임 중복 모달창-->
+<!--닉네임 결과 모달창-->
 <div class="dim-layer js-modal4">
     <div class="modal-group modal-group-message">
         <div class="dim-bg"></div>
-        <div id="layer" class="modal-layer">
+        <div id="layer4" class="modal-layer">
             <div class="modal-container">
                 <div class="box-modal">
                     <div class="modal-message">
                         <div class="txt">사용 중인 닉네임입니다. <br>다른 닉네임을 입력해주세요.</div>
-                    </div>
-
-                    <div class="btn-group-modal">
-                        <button type="button" class="btn btn-custom js-modal-master-close">확인</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--포인트 부족 모달창-->
-<div class="dim-layer js-modal5">
-    <div class="modal-group modal-group-message">
-        <div class="dim-bg"></div>
-        <div id="layer" class="modal-layer">
-            <div class="modal-container">
-                <div class="box-modal">
-                    <div class="modal-message">
                         <div class="txt">포인트가 부족합니다.</div>
-                    </div>
-
-                    <div class="btn-group-modal">
-                        <button type="button" class="btn btn-custom js-modal-master-close">확인</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--닉네임 변경 완료 모달창-->
-<div class="dim-layer js-modal6">
-    <div class="modal-group modal-group-message">
-        <div class="dim-bg"></div>
-        <div id="layer" class="modal-layer">
-            <div class="modal-container">
-                <div class="box-modal">
-                    <div class="modal-message">
                         <div class="txt">닉네임이 변경되었습니다.</div>
                     </div>
 
@@ -169,18 +120,23 @@
     <div class="container">
         <div class="mypage">
             <div class="profile-picture">
-                <img src="../img/img_transparent1.png" alt="썸네일" class="thumb" style="background-image: url('../img/tmp/img_picture1.png');">
+                <img src="/resources/frontuser/img/img_transparent1.png" alt="썸네일" class="thumb img_tbuser_img" style="background-image: url('/resources/frontuser/img/tmp/img_picture1.png');">
             </div>
 
             <ol class="list-menu">
                 <li>
-                    <div class="card js-modal-open">
+                    <div class="card" onclick="listener_modal_show('profile')">
                         <div class="tit-group">
                             <div class="tit">프로필 설정</div>
                             <div class="txt">나의 프로필 사진, 닉네임, 자기소개를 관리할 수 있어요.</div>
                         </div>
                     </div>
                 </li>
+                <script>
+                    function listener_modal_show(obj){
+                        $(".js-modal_" + obj).show();
+                    }
+                </script>
 
                 <li>
                     <a href="point-history.html" class="card">
@@ -201,7 +157,7 @@
                 </li>
 
                 <li>
-                    <a href="privacy.html" class="card">
+                    <a href="/tbuser/privacy" class="card">
                         <div class="tit-group">
                             <div class="tit">개인정보 관리</div>
                             <div class="txt">팝업 알림, 제3자 개인정보 동의에 대한 설정을 진행할 수 있어요.</div>
@@ -224,6 +180,59 @@
 
 <body th:replace="~{@{includes/user/bottom}}"></body>
 <script>
+    $( document ).ready(function() {
+        console.log( "ready!" );
+        detail_tbuser();
+    });
+
+    function detail_tbuser(){
+        let tbuserId = "my";
+        let _data = new Map();
+        _data.url = "/api/tbuser";
+        _data.type = "GET";
+        _data.param = {'id':tbuserId};
+        _data.success = function(obj_data, obj_status, obj_xhr){
+            //alert(JSON.stringify(obj_data.img));
+            let detailKeys = Object.keys(obj_data)
+            for (let eachKey of detailKeys){
+                if(!isNull(obj_data[eachKey])){
+                    //alert(eachKey + " : " + obj_data[eachKey] + "//" + isNull(eachKey));
+                    $(".font_tbuser_" + eachKey).text(obj_data[eachKey]);
+                    $("#detail_tbuser_" + eachKey).val(obj_data[eachKey]);
+                    $("#img_tbuser_" + eachKey).attr("src", obj_data[eachKey]);
+                }
+            }
+            if(!isNull(obj_data["img"])){
+                localStorage.setItem("my_tbuser_img", obj_data["img"]);
+                $(".img_tbuser_img").attr("src", localStorage.getItem("my_tbuser_img"));
+            }
+        }
+        _data.error = function(obj_data, obj_status, obj_xhr){
+            alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+        }
+        func_ajax(_data);
+    }
+    function update_tbuser(obj){
+        let _param = {};
+        _param["id"] = $("#detail_tbuser_id").val();
+        _param[$(obj).attr("keyword")] = $(obj).val();
+        //alert(_param[$(obj).attr("keyword")]);
+
+        let _data = new Map();
+        _data.url = "/api/tbuser";
+        _data.type = "PUT";
+        _data.param = _param;
+        _data.success = function(obj_data, obj_status, obj_xhr){
+            //alert("수정되었습니다.");
+            if($(obj).attr("keyword") + "" === "img"){
+                $("#img_tbuser_img").attr("src", $(obj).val());
+            }
+        }
+        _data.error = function(obj_data, obj_status, obj_xhr){
+            alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+        }
+        func_ajax(_data);
+    }
 </script>
 </body>
 </html>

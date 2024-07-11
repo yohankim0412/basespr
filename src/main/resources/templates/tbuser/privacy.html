@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <head th:replace="~{@{includes/user/head}}"></head>
+</head>
+<body>
+
+<input type="hidden" id="detail_tbuser_id"/>
+<input type="hidden" id="detail_tbuser_img" keyword="img"/>
+
+<!--팝업 알림 모달창-->
+<div class="dim-layer js-modal js-modal_popup">
+    <div class="modal-group modal-group-message">
+        <div class="dim-bg"></div>
+        <div id="layer1" class="modal-layer">
+            <div class="modal-container">
+                <div class="box-modal">
+                    <div class="modal-message">
+                        <div class="txt">이벤트 당첨 알람 등 중요 알림을 받지 못할 수 있으며, 이벤트 참여가 제한 될 수 있습니다. </div>
+                    </div>
+
+                    <div class="btn-group-modal2">
+                        <button type="button" class="btn btn-custom btn-custom-v1 js-modal-master-close" onclick="listener_boolean_false('popup')">알림끄기</button>
+                        <button type="button" class="btn btn-custom js-modal-master-close">유지하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--제3자 개인정보 동의 모달창-->
+<div class="dim-layer js-modal2 js-modal_agreethird">
+    <div class="modal-group modal-group-message">
+        <div class="dim-bg"></div>
+        <div id="layer2" class="modal-layer">
+            <div class="modal-container">
+                <div class="box-modal">
+                    <div class="modal-message">
+                        <div class="txt">협력사를 통한 이벤트 당첨자 선정 등 <br>중요 이벤트에 참여할 수 없습니다.</div>
+                    </div>
+
+                    <div class="btn-group-modal2">
+                        <button type="button" class="btn btn-custom btn-custom-v1 js-modal-master-close" onclick="listener_boolean_false('agreethird')">알림끄기</button>
+                        <button type="button" class="btn btn-custom js-modal-master-close">유지하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="wrap">
+    <header class="header">
+        <div class="hd">
+            <div class="hd-tit">개인정보 관리</div>
+            <button type="button" class="hd-back" onclick="location.href='javascript:history.back(-1);'"></button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="privacy">
+            <div class="profile-picture">
+                <img src="/resources/frontuser/img/img_transparent1.png" alt="썸네일" class="thumb img_tbuser_img" style="background-image: url('/resources/frontuser/img/tmp/img_picture1.png');">
+            </div>
+
+            <input id="detail_tbuser_popup" type="hidden" keyword="popup"/>
+            <input id="detail_tbuser_agreethird" type="hidden" keyword="agreethird"/>
+            <ol class="list-menu">
+                <li>
+                    <div class="card">
+                        <div class="tit-group">
+                            <div class="tit">팝업 알림</div>
+                            <div class="txt">이벤트, 공지사항 등에 대한 알림설정을 할 수 있어요.</div>
+                        </div>
+
+                        <div class="switch-group">
+                            <label for="check_tbuser_popup" class="switch">
+                                <input id="check_tbuser_popup" name="onoff_ck" type="checkbox" onchange="listener_boolean_changed('popup');">
+                                <span class="slider round"></span>
+                                <div class="label"></div>
+                            </label>
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="card">
+                        <div class="tit-group">
+                            <div class="tit">제3자 개인정보 동의</div>
+                            <div class="txt">협력사를 통한 이벤트 신청 등이 제한될 수 있어요.</div>
+                        </div>
+
+                        <div class="switch-group">
+                            <label for="check_tbuser_agreethird" class="switch">
+                                <input id="check_tbuser_agreethird" name="onoff_ck" type="checkbox" onchange="listener_boolean_changed('agreethird');">
+                                <span class="slider round"></span>
+                                <div class="label"></div>
+                            </label>
+                        </div>
+                    </div>
+                </li>
+                <script>
+                    function listener_boolean_false(obj){
+                        $("#check_tbuser_" + obj).prop("checked", false);
+                        $("#detail_tbuser_" + obj).val(false);
+                        update_tbuser("#detail_tbuser_" + obj);
+                    }
+                    function listener_boolean_changed(obj){
+                        let checked_boolean = $("#check_tbuser_" + obj).prop("checked");
+                        //alert(checked_boolean);
+                        if(checked_boolean){
+                            $("#detail_tbuser_" + obj).val(checked_boolean);
+                            update_tbuser("#detail_tbuser_" + obj);
+                        } else {
+                            $(".js-modal_" + obj).show();
+                            $("#check_tbuser_" + obj).prop("checked", true);
+                        }
+                    }
+                </script>
+
+                <li>
+                    <a href="/tbuser/withdraw" class="card">
+                        <div class="tit-group">
+                            <div class="tit">회원탈퇴</div>
+                            <div class="txt">모든 개인정보가 삭제됩니다.</div>
+                        </div>
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<body th:replace="~{@{includes/user/bottom}}"></body>
+<script>
+    $( document ).ready(function() {
+        console.log( "ready!" );
+        detail_tbuser();
+    });
+
+    function detail_tbuser(){
+        let tbuserId = "my";
+        let _data = new Map();
+        _data.url = "/api/tbuser";
+        _data.type = "GET";
+        _data.param = {'id':tbuserId};
+        _data.success = function(obj_data, obj_status, obj_xhr){
+            //alert(JSON.stringify(obj_data.img));
+            let detailKeys = Object.keys(obj_data)
+            for (let eachKey of detailKeys){
+                if(!isNull(obj_data[eachKey])){
+                    //alert(eachKey + " : " + obj_data[eachKey] + "//" + isNull(eachKey));
+                    $(".font_tbuser_" + eachKey).text(obj_data[eachKey]);
+                    $("#detail_tbuser_" + eachKey).val(obj_data[eachKey]);
+                    $("#img_tbuser_" + eachKey).attr("src", obj_data[eachKey]);
+                }
+            }
+            if(!isNull(obj_data["img"])){
+                localStorage.setItem("my_tbuser_img", obj_data["img"]);
+                $(".img_tbuser_img").attr("src", localStorage.getItem("my_tbuser_img"));
+            }
+
+            let tbuser_popup = obj_data["popup"];
+            $("#check_tbuser_popup").prop("checked", tbuser_popup);
+            let tbuser_agreethird = obj_data["agreethird"];
+            $("#check_tbuser_agreethird").prop("checked", tbuser_agreethird);
+        }
+        _data.error = function(obj_data, obj_status, obj_xhr){
+            alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+        }
+        func_ajax(_data);
+    }
+    function update_tbuser(obj){
+        let _param = {};
+        _param["id"] = $("#detail_tbuser_id").val();
+        _param[$(obj).attr("keyword")] = $(obj).val();
+        //alert(_param[$(obj).attr("keyword")]);
+
+        let _data = new Map();
+        _data.url = "/api/tbuser";
+        _data.type = "PUT";
+        _data.param = _param;
+        _data.success = function(obj_data, obj_status, obj_xhr){
+            //alert("수정되었습니다.");
+            if($(obj).attr("keyword") + "" === "img"){
+                $("#img_tbuser_img").attr("src", $(obj).val());
+            }
+        }
+        _data.error = function(obj_data, obj_status, obj_xhr){
+            alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+        }
+        func_ajax(_data);
+    }
+</script>
+</body>
+</html>

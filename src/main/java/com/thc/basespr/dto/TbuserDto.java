@@ -145,9 +145,16 @@ public class TbuserDto {
 		@Schema(description = "img", example="대표사진")
 		@Size(max=400)
 		private String img;
+		@Schema(description = "brief", example="내용")
+		private String brief;
 		@Schema(description = "content", example="내용")
 		@Size(max=40000)
 		private String content;
+
+		@Schema(description = "popup", example="")
+		private Boolean popup;
+		@Schema(description = "agreethird", example="")
+		private Boolean agreethird;
 	}
 	@SuperBuilder
 	@Getter
@@ -173,8 +180,15 @@ public class TbuserDto {
 		private String phone;
 		@Schema(description = "img", example="대표사진")
 		private String img;
+		@Schema(description = "brief", example="간단소개")
+		private String brief;
 		@Schema(description = "content", example="내용")
 		private String content;
+
+		@Schema(description = "popup", example="")
+		private boolean popup;
+		@Schema(description = "agreethird", example="")
+		private boolean agreethird;
 	}
 
 	@SuperBuilder

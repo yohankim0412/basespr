@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <head th:replace="~{@{includes/user/head}}"></head>
+</head>
+<body>
+
+<input type="hidden" id="detail_tbuser_id"/>
+<input type="hidden" id="detail_tbuser_img" keyword="img"/>
+
+<!--탈퇴하기 모달창-->
+<div class="dim-layer js-modal">
+    <div class="modal-group modal-group-message">
+        <div class="dim-bg"></div>
+        <div id="layer" class="modal-layer">
+            <div class="modal-container">
+                <div class="box-modal">
+                    <div class="modal-message">
+                        <div class="tit">잠깐!</div>
+                        <div class="txt">회원 탈퇴를 하시면 더이상 <br>QR 인증으로 출입하실 수 없어요!</div>
+                    </div>
+
+                    <div class="btn-group-modal">
+                        <button type="button" class="btn btn-custom btn-custom-v1 js-modal-master-close" onclick="listener_withdraw()">그래도 탈퇴할래요.</button>
+                        <button type="button" class="btn btn-custom js-modal-master-close">아니오, 탈퇴 안 할래요.</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function listener_withdraw(){
+        $(".div_withdraw_before").addClass("hide");
+        $(".div_withdraw_complete").removeClass("hide");
+        localStorage_clear();
+    }
+</script>
+
+<div id="wrap">
+    <header class="header">
+        <div class="hd">
+            <div class="hd-tit">개인정보 관리</div>
+            <button type="button" class="hd-back" onclick="location.href='javascript:history.back(-1);'"></button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="flex-box withdraw">
+            <div class="flex-content div_withdraw_before">
+                <div class="top-page">
+                    <div class="tit">회원탈퇴</div>
+                </div>
+
+                <div class="tit-group">
+                    <div class="tit">고객님의 ID는 <br><strong class="font_tbuser_code">-</strong> 입니다.</div>
+                    <div class="txt">단말기가 변경되거나 휴대폰 번호 변경으로 <br>재인증이 필요할 때 꼭 기억해주세요. <br>ID를 잊어버리면 해당 포인트도 소멸됩니다.</div>
+                </div>
+            </div>
+            <div class="flex-content div_withdraw_complete hide">
+                <div class="top-page">
+                    <div class="tit">회원탈퇴</div>
+                </div>
+
+                <div class="tit-group">
+                    <div class="tit">회원탈퇴가 완료되었습니다.</div>
+                    <div class="txt">MUIN GUARD를 이용해 주셔서 감사합니다.</div>
+                </div>
+            </div>
+
+            <div class="flex-bottom div_withdraw_before">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-custom btn-custom-v1 js-modal-open">탈퇴하기</button>
+                    <button type="button" class="btn btn-custom" onclick="history.back(-1);">유지하기</button>
+                </div>
+            </div>
+            <div class="flex-bottom div_withdraw_complete hide">
+                <button type="button" class="btn-custom" onclick="location.replace('/index')">종료하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<body th:replace="~{@{includes/user/bottom}}"></body>
+<script>
+    $( document ).ready(function() {
+        console.log( "ready!" );
+        detail_tbuser();
+    });
+
+    function detail_tbuser(){
+        let tbuserId = "my";
+        let _data = new Map();
+        _data.url = "/api/tbuser";
+        _data.type = "GET";
+        _data.param = {'id':tbuserId};
+        _data.success = function(obj_data, obj_status, obj_xhr){
+            //alert(JSON.stringify(obj_data.img));
+            let detailKeys = Object.keys(obj_data)
+            for (let eachKey of detailKeys){
+                if(!isNull(obj_data[eachKey])){
+                    //alert(eachKey + " : " + obj_data[eachKey] + "//" + isNull(eachKey));
+                    $(".font_tbuser_" + eachKey).text(obj_data[eachKey]);
+                    $("#detail_tbuser_" + eachKey).val(obj_data[eachKey]);
+                    $("#img_tbuser_" + eachKey).attr("src", obj_data[eachKey]);
+                }
+            }
+            if(!isNull(obj_data["img"])){
+                localStorage.setItem("my_tbuser_img", obj_data["img"]);
+                $(".img_tbuser_img").attr("src", localStorage.getItem("my_tbuser_img"));
+            }
+        }
+        _data.error = function(obj_data, obj_status, obj_xhr){
+            alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+        }
+        func_ajax(_data);
+    }
+</script>
+</body>
+</html>

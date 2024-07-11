@@ -114,9 +114,9 @@ public class TbuserServiceImpl implements TbuserService {
         return tbuser.toCreateResDto();
     }
     public TbuserDto.CreateResDto update(TbuserDto.UpdateServDto param){
-        System.out.println(param);
         Tbuser tbuser = tbuserRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException(""));
 
+        logger.info("!!!!" + param.getPopup());
         //권한 확인
         if(!param.isAdmin() && !(param.getReqTbuserId()).equals(tbuser.getId())){ throw new NoAuthorizationException(""); }
 
@@ -129,8 +129,17 @@ public class TbuserServiceImpl implements TbuserService {
         if(param.getImg() != null) {
             tbuser.setImg(param.getImg());
         }
+        if(param.getBrief() != null) {
+            tbuser.setBrief(param.getBrief());
+        }
         if(param.getContent() != null) {
             tbuser.setContent(param.getContent());
+        }
+        if(param.getPopup() != null) {
+            tbuser.setPopup(param.getPopup());
+        }
+        if(param.getAgreethird() != null) {
+            tbuser.setAgreethird(param.getAgreethird());
         }
         return tbuserRepository.save(tbuser).toCreateResDto();
     }

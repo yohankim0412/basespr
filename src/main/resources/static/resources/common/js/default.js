@@ -325,7 +325,7 @@ function listenerBeforeCreate(){
 function isNull(x) {
 	let result_x = false;
 	x = x + "";
-	if(x == null || x == "null" || x == "" || x == "undefined"){
+	if(x == null || x === "null" || x === "" || x === "undefined"){
 		result_x = true;
 	} else {
 	}

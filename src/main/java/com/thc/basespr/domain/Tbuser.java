@@ -29,7 +29,11 @@ public class Tbuser extends AuditingFields{
 
     @Setter @Column(nullable = true) private String route;
     @Setter @Column(nullable = true) private String img; // 프로필 사진
+    @Setter @Column(nullable = true) private String brief; //자기소개(간단)
     @Setter @Column(nullable = true, length=2000000) @Lob private String content; // 본문
+
+    @Setter @Column(nullable = false) private Boolean popup;
+    @Setter @Column(nullable = false) private Boolean agreethird;
 
     //fetch 타입 바꾸고, toString 순환 참조 수정
     @OneToMany(mappedBy = "tbuser", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
@@ -56,6 +60,8 @@ public class Tbuser extends AuditingFields{
         this.birth = birth;
         this.gender = gender;
         this.route = route;
+        this.popup = true;
+        this.agreethird = true;
     }
     public static Tbuser of(String username, String password, String code, String nick
     , String name, String phone, String birth, String gender, String route){
