@@ -76,6 +76,9 @@ public class TbnoticeServiceImpl implements TbnoticeService {
         if(!param.isAdmin()){ throw new NoAuthorizationException(""); }
         TbnoticeDto.SelectResDto selectDto = tbnoticeMapper.detail(param.getId());
         if(selectDto == null){ throw new NoMatchingDataException(""); }
+        //날짜 표기 추가
+        String createdAt = selectDto.getCreatedAt();
+        selectDto.setCreatedAtOnlyDate(createdAt.substring(0, 19));
         return selectDto;
     }
 

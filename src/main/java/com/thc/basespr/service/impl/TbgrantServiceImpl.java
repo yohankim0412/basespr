@@ -89,6 +89,10 @@ public class TbgrantServiceImpl implements TbgrantService {
         if(!param.isAdmin()){ throw new NoAuthorizationException(""); }
         TbgrantDto.SelectResDto selectDto = tbgrantMapper.detail(param.getId());
         if(selectDto == null){ throw new NoMatchingDataException(""); }
+        //날짜 표기 추가
+        String createdAt = selectDto.getCreatedAt();
+        selectDto.setCreatedAtOnlyDate(createdAt.substring(0, 19));
+
         selectDto.setTbgrantparts(tbgrantpartService.list(TbgrantpartDto.ListServDto.builder().deleted("N").tbgrantId(selectDto.getId()).reqTbuserId(param.getReqTbuserId()).build()));
         return selectDto;
     }

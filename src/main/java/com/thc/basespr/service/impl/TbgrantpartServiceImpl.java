@@ -96,6 +96,9 @@ public class TbgrantpartServiceImpl implements TbgrantpartService {
     public TbgrantpartDto.SelectResDto detail(CommonDto.SelectServDto param){
         TbgrantpartDto.SelectResDto selectDto = tbgrantpartMapper.detail(param.getId());
         if(selectDto == null){ throw new NoMatchingDataException(""); }
+        //날짜 표기 추가
+        String createdAt = selectDto.getCreatedAt();
+        selectDto.setCreatedAtOnlyDate(createdAt.substring(0, 19));
         return selectDto;
     }
 

@@ -70,6 +70,9 @@ public class TbqnafileServiceImpl implements TbqnafileService {
     public TbqnafileDto.SelectResDto detail(CommonDto.SelectServDto param){
         TbqnafileDto.SelectResDto selectDto = tbqnafileMapper.detail(param.getId());
         if(selectDto == null){ throw new NoMatchingDataException(""); }
+        //날짜 표기 추가
+        String createdAt = selectDto.getCreatedAt();
+        selectDto.setCreatedAtOnlyDate(createdAt.substring(0, 19));
         return selectDto;
     }
 
