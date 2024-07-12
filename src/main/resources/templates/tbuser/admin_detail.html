@@ -69,10 +69,35 @@
                                 <input type="text" class="form-control m-b" id="detail_tbuser_phone" keyword="phone" placeholder="내용을 입력하세요" readonly="readonly" />
                             </div>
 
+                            <label class="col-sm-2 col-form-label">요약설명</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control m-b" id="detail_tbuser_brief" keyword="brief" onkeyup="listener_maxlength_check(this, 2000);" onchange="update_tbuser(this)" rows="2" placeholder="내용을 입력하세요"></textarea>
+                            </div>
                             <label class="col-sm-2 col-form-label">내용</label>
                             <div class="col-sm-10">
                                 <textarea class="form-control m-b" id="detail_tbuser_content" keyword="content" onkeyup="listener_maxlength_check(this, 2000);" onchange="update_tbuser(this)" rows="4" placeholder="내용을 입력하세요"></textarea>
                             </div>
+
+                            <label class="col-sm-2">
+                                대표사진
+                                <input class="hide" type="file" id="input_upload_img" onchange="readURLFile(this, listener_after_upload)" accept="image/*"/>
+                                <label for="input_upload_img"><div class="btn btn-default btn-sm">설정</div></label>
+                            </label>
+                            <div class="col-sm-10">
+                                <input type="hidden1" class="input_required form-control m-b" id="detail_tbuser_img" keyword="img" placeholder="내용을 입력하세요" errormsg="사진을 선택해주세요." onchange="listener_tbuser_changed()"/>
+                                <img id="img_tbuser_img" class="img-fluid" style="height:100px;" src="/resources/frontuser/img/img_transparent1.png"/>
+                            </div>
+                            <script>
+                                function listener_after_upload(file_type, url){
+                                    $("#img_tbuser_img").attr("src", url);
+                                    $("#detail_tbuser_img").val(url);
+                                    update_tbuser("#detail_tbuser_img");
+                                }
+                                function listener_tbuser_changed(){
+                                    $("#img_tbuser_img").attr("src", $("#detail_tbuser_img").val());
+                                    update_tbuser("#detail_tbuser_img");
+                                }
+                            </script>
                         </div>
                     </div>
                 </div>
